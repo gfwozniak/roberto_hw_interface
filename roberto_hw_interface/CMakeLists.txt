@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   std_srvs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -108,7 +109,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES ros_control_example
-  CATKIN_DEPENDS controller_manager roscpp rospy std_msgs std_srvs
+  CATKIN_DEPENDS controller_manager roscpp rospy std_msgs std_srvs geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -210,3 +211,6 @@ ${catkin_INCLUDE_DIRS}
 
 add_executable(roberto_hw src/roberto_hw.cpp)
 target_link_libraries(roberto_hw ${catkin_LIBRARIES})
+
+add_executable(topic_convert src/topic_convert.cpp)
+target_link_libraries(topic_convert ${catkin_LIBRARIES})
