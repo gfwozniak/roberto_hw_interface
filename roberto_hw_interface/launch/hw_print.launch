@@ -3,7 +3,7 @@
   <rosparam file="$(find roberto_hw_interface)/config/controllers.yaml" command="load"/>
   <rosparam file="$(find roberto_hw_interface)/config/joint_limits.yaml" command="load"/>
 
-  <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw"/>
+  <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw" output="screen"/>
 
   <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/> -->
     
@@ -16,10 +16,5 @@
   <node name="topic_convert" pkg="roberto_hw_interface" type="topic_convert">
     <remap from="output" to="Roberto/JointD_VelocityController/command"/>
   </node>
-
-  <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen">
-   <remap from="cmd_vel" to="input"/>
-  </node>
-
 
 </launch>
