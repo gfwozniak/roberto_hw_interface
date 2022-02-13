@@ -34,6 +34,7 @@ class Roberto : public hardware_interface::RobotHW
         joint_limits_interface::EffortJointSaturationInterface effortJointSaturationInterface;
         joint_limits_interface::PositionJointSaturationInterface positionJointSaturationInterface;
         
+        ctre::phoenix::motorcontrol::can::TalonFX talon;
 
         double joint_position_[4];
         double joint_velocity_[4];

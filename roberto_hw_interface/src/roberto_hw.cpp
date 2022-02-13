@@ -1,6 +1,9 @@
 #include <roberto_hw_interface/roberto_hw.h>
 
-Roberto::Roberto(ros::NodeHandle& nh) : nh_(nh) {
+Roberto::Roberto(ros::NodeHandle& nh) 
+    : nh_(nh),
+    talon(2)
+     {
 
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
     init();
@@ -22,6 +25,9 @@ Roberto::~Roberto() {
 
 
 void Roberto::init() {
+// Phoenix initialize
+
+
         
 // Create joint_state_interface for JointA
     hardware_interface::JointStateHandle jointStateHandleA("JointA", &joint_position_[0], &joint_velocity_[0], &joint_effort_[0]);
@@ -65,7 +71,7 @@ void Roberto::init() {
 
 
 
-// JOINT D
+// JOINT STATE FOR JOINT D
     hardware_interface::JointStateHandle jointStateHandleD("JointD", &joint_position_[4], &joint_velocity_[4], &joint_effort_[4]);
     joint_state_interface_.registerHandle(jointStateHandleD);
 // CREATE VELOCITY JOINT INTERFACE AS JOINT D ACCEPTS VELOCITY CMD
@@ -115,20 +121,10 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     //joint_position_command_ for JointC.
 
-//  ROS_INFO("Joint A:");
-//  s = std::to_string(joint_effort_command_[0]);
-//  ROS_INFO(s.c_str());
-
-//  ROS_INFO("Joint B:");
-//  s = std::to_string(joint_effort_command_[1]);
-//  ROS_INFO(s.c_str());
-
-//  ROS_INFO("Joint C:");
-//  s = std::to_string(joint_position_command_);
-//  ROS_INFO(s.c_str());
-
     s = std::to_string(joint_velocity_command_);
     ROS_INFO(s.c_str());
+
+    talon.Set(ControlMode::PercentOutput, joint_velocity_command_);
 
 }
 
@@ -140,9 +136,13 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "Roberto_hardware_inerface_node");
     ros::NodeHandle nh;
     
+    // Initialize CAN interface with 'can0'
+	std::string interface;
+	interface = "can0";
+	ctre::phoenix::platform::can::SetCANInterface(interface.c_str());
+
     //Separate Spinner thread for the Non-Real time callbacks such as service callbacks to load controllers
     ros::MultiThreadedSpinner spinner(2);
-    
     
     // Create the object of the robot hardware_interface class and spin the thread. 
     Roberto ROBOT(nh);
