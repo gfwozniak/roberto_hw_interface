@@ -301,5 +301,12 @@ target_link_libraries(roberto_hw
   ${PHOENIX_LIBRARIES}
 )
 
+add_executable(falcon_test src/falcon_test.cpp)
+target_link_libraries(falcon_test
+  ${catkin_LIBRARIES}
+  Threads::Threads
+  ${PHOENIX_LIBRARIES}
+)
+
 add_executable(topic_convert src/topic_convert.cpp)
 target_link_libraries(topic_convert ${catkin_LIBRARIES})
