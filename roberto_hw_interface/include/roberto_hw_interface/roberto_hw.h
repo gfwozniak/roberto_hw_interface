@@ -9,6 +9,11 @@
 #include <ros/ros.h>
 #include <string.h>
 
+#define Phoenix_No_WPI // remove WPI dependencies
+#include "ctre/Phoenix.h"
+#include "ctre/phoenix/platform/Platform.h"
+#include "ctre/phoenix/unmanaged/Unmanaged.h"
+
 class Roberto : public hardware_interface::RobotHW 
 {
     public:
