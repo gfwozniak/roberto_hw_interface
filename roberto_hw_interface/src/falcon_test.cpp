@@ -41,6 +41,7 @@ int main() {
 	sleepApp(6000);
 
 	// Initialize motor with 0 output
+	ctre::phoenix::unmanaged::FeedEnable(10000);
 
 	drive(0);
 	printf("Motor connected!\n");

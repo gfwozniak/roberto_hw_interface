@@ -124,6 +124,7 @@ void Roberto::write(ros::Duration elapsed_time) {
     s = std::to_string(joint_velocity_command_);
     ROS_INFO(s.c_str());
 
+    ctre::phoenix::unmanaged::FeedEnable(100);
     talon.Set(ControlMode::PercentOutput, joint_velocity_command_);
 
 }

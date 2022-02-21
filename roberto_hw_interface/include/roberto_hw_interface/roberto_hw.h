@@ -13,6 +13,7 @@
 #include "ctre/Phoenix.h"
 #include "ctre/phoenix/platform/Platform.h"
 #include "ctre/phoenix/unmanaged/Unmanaged.h"
+#include "ctre/phoenix/cci/Unmanaged_CCI.h"
 
 class Roberto : public hardware_interface::RobotHW 
 {
