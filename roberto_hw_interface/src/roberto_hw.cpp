@@ -1,8 +1,9 @@
 #include <roberto_hw_interface/roberto_hw.h>
 
-Roberto::Roberto(ros::NodeHandle& nh) 
+Roberto::Roberto(ros::NodeHandle& nh, int idleft, int idright) 
     : nh_(nh),
-    talon(2)
+    talonleft(idleft),
+    talonright(idright)
      {
 
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
@@ -61,7 +62,7 @@ void Roberto::init() {
     joint_state_interface_.registerHandle(jointStateHandleC);
 
 // Create position joint interface as JointC accepts position command.
-    hardware_interface::JointHandle jointPositionHandleC(jointStateHandleC, &joint_position_command_);
+    hardware_interface::JointHandle jointPositionHandleC(jointStateHandleC, &joint_position_command_[0]);
     position_joint_interface_.registerHandle(jointPositionHandleC);
 // Create Joint Limit interface for JointC
     joint_limits_interface::getJointLimits("JointC", nh_, limits);
@@ -75,15 +76,23 @@ void Roberto::init() {
     hardware_interface::JointStateHandle jointStateHandleD("JointD", &joint_position_[4], &joint_velocity_[4], &joint_effort_[4]);
     joint_state_interface_.registerHandle(jointStateHandleD);
 // CREATE VELOCITY JOINT INTERFACE AS JOINT D ACCEPTS VELOCITY CMD
-    hardware_interface::JointHandle jointVelocityHandleD(jointStateHandleD, &joint_velocity_command_);
-    velocity_joint_interface_.registerHandle(jointVelocityHandleD);
+    hardware_interface::JointHandle jointVelocityHandleD(jointStateHandleD, &joint_velocity_command_[0]);
+    velocity_joint_interface_0.registerHandle(jointVelocityHandleD);
+
+// JOINT STATE FOR JOINT E
+    hardware_interface::JointStateHandle jointStateHandleE("JointE", &joint_position_[4], &joint_velocity_[4], &joint_effort_[4]);
+    joint_state_interface_.registerHandle(jointStateHandleE);
+// CREATE VELOCITY JOINT INTERFACE AS JOINT E ACCEPTS VELOCITY CME
+    hardware_interface::JointHandle jointVelocityHandleE(jointStateHandleE, &joint_velocity_command_[1]);
+    velocity_joint_interface_1.registerHandle(jointVelocityHandleE);
 
 
 // Register all joints interfaces    
     registerInterface(&joint_state_interface_);
     registerInterface(&effort_joint_interface_);
     registerInterface(&position_joint_interface_);
-    registerInterface(&velocity_joint_interface_);
+    registerInterface(&velocity_joint_interface_0);
+    registerInterface(&velocity_joint_interface_1);
     registerInterface(&effortJointSaturationInterface);
     registerInterface(&positionJointSaturationInterface);    
 }
@@ -121,11 +130,12 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     //joint_position_command_ for JointC.
 
-    s = std::to_string(joint_velocity_command_);
+    s = std::to_string(joint_velocity_command_[0]);
     ROS_INFO(s.c_str());
 
     ctre::phoenix::unmanaged::FeedEnable(100);
-    talon.Set(ControlMode::PercentOutput, joint_velocity_command_);
+    talonleft.Set(ControlMode::PercentOutput, joint_velocity_command_[0]);
+    talonright.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
 
 }
 
@@ -146,7 +156,7 @@ int main(int argc, char** argv)
     ros::MultiThreadedSpinner spinner(2);
     
     // Create the object of the robot hardware_interface class and spin the thread. 
-    Roberto ROBOT(nh);
+    Roberto ROBOT(nh, 21, 22);
     spinner.spin();
     
     return 0;
