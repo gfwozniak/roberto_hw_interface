@@ -7,7 +7,6 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include <SDL2/SDL.h>
 #include <unistd.h>
 
 using namespace ctre::phoenix;
@@ -16,13 +15,9 @@ using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
 /* make some talons for drive train */
-TalonFX talLeft(2);
-
-// [-1,1] Range
-void drive(double fwd)
-{
-	talLeft.Set(ControlMode::PercentOutput, fwd);
-}
+std::string interface = "can0";
+TalonSRX talLeft(1, interface); //Use the specified interface
+TalonSRX talRght(0); //Use the default interface (can0)
 
 /** simple wrapper for code cleanup */
 void sleepApp(int ms)
@@ -30,37 +25,12 @@ void sleepApp(int ms)
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-int main() {
-	// Initialize CAN interface with 'can0'
-	std::string interface;
-	interface = "can0";
-	ctre::phoenix::platform::can::SetCANInterface(interface.c_str());
+int main() 
+{	
+	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(10000);
+	talLeft.Set(ControlMode::PercentOutput, .5);
+	sleepApp(10000);
+	talLeft.Set(ControlMode::PercentOutput, 0);
 
-	// c_SetPhoenixDiagnosticsStartTime(-1);
-
-	sleepApp(6000);
-
-	// Initialize motor with 0 output
-	ctre::phoenix::unmanaged::FeedEnable(10000);
-
-	drive(0);
-	printf("Motor connected!\n");
-
-//// Begin countdown
-//printf("Motor starting in...\n");
-//sleepApp(1000);
-//for (int i = 5; i > 0; i--) {
-//	printf("%i...\n", i);
-//	sleepApp(1000);
-//}
-
-	// Run motor
-	drive(0.1);
-	printf("Motor running for two seconds...\n");
-	sleepApp(2000);
-
-	// Motor off
-	drive(0.0);
-	printf("Motor off.\n");
 	return 0;
 }

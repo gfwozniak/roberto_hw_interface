@@ -212,65 +212,30 @@ ${catkin_INCLUDE_DIRS}
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-set(executable_1 "roberto_hw")
-add_executable(${executable_1} src/roberto_hw.cpp)
-target_link_libraries(${executable_1} 
-  ${catkin_LIBRARIES}
-  Threads::Threads
-  ${PHOENIX_LIBRARIES}
-)
 if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_Phoenix.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
-	target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixDiagnostics.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixPlatform_socketcan.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixCore.a)
+    set(PHOENIX_LIBS_DIR ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry)
 elseif (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "aarch64-linux-gnu") # Jetson TX2
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_Phoenix.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixCCI.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixDiagnostics.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixPlatform_socketcan.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixCanutils.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixCore.a)
+    set(PHOENIX_LIBS_DIR ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx)
 else()
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_Phoenix.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixDiagnostics.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixPlatform_socketcan.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
-    target_link_libraries(${executable_1} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixCore.a)
+    set(PHOENIX_LIBS_DIR ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64)
 endif()
 
-set(executable_2 "falcon_test")
-add_executable(${executable_2} src/falcon_test.cpp)
-target_link_libraries(${executable_2}
+add_library(CTRE_Phoenix SHARED IMPORTED)
+set_target_properties(CTRE_Phoenix PROPERTIES IMPORTED_LOCATION ${PHOENIX_LIBS_DIR}/libCTRE_Phoenix.so)
+
+add_executable(roberto_hw src/roberto_hw.cpp)
+target_link_libraries(roberto_hw 
+  CTRE_Phoenix
   ${catkin_LIBRARIES}
   Threads::Threads
-  ${PHOENIX_LIBRARIES}
 )
-if (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "arm-linux-gnueabihf") # Jetson TK1 / Pi
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_Phoenix.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixCCI.a)
-	target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixDiagnostics.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixPlatform_socketcan.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixCanutils.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/raspberry/libCTRE_PhoenixCore.a)
-elseif (${CMAKE_LIBRARY_ARCHITECTURE} STREQUAL "aarch64-linux-gnu") # Jetson TX2
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_Phoenix.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixCCI.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixDiagnostics.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixPlatform_socketcan.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixCanutils.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/jetsontx/libCTRE_PhoenixCore.a)
-else()
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_Phoenix.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixDiagnostics.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixPlatform_socketcan.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
-    target_link_libraries(${executable_2} ${CMAKE_CURRENT_LIST_DIR}/lib/x86-64/libCTRE_PhoenixCore.a)
-endif()
+
+add_executable(falcon_test src/falcon_test.cpp)
+target_link_libraries(falcon_test
+  CTRE_Phoenix
+  ${catkin_LIBRARIES}
+  Threads::Threads
+)
 
 add_executable(topic_convert src/topic_convert.cpp)
 target_link_libraries(topic_convert ${catkin_LIBRARIES})
