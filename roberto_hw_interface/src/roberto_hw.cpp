@@ -118,23 +118,23 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    positionJointSaturationInterface.enforceLimits(elapsed_time); // enforce limits for JointC
 
     // Right motor control
-    std::string s1;
+//    std::string s1;
+//
+//    s1 = std::to_string(joint_velocity_command_[0]);
+//    ROS_INFO("Joint D");
+//    ROS_INFO(s1.c_str());
 
-    s1 = std::to_string(joint_velocity_command_[0]);
-    ROS_INFO("Joint D");
-    ROS_INFO(s1.c_str());
-
-    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(1000);
     rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[0]);
 
     // Left motor control
-    std::string s2;
+//    std::string s2;
+//
+//    s2 = std::to_string(joint_velocity_command_[1]);
+//    ROS_INFO("Joint E");
+//    ROS_INFO(s2.c_str());
 
-    s2 = std::to_string(joint_velocity_command_[1]);
-    ROS_INFO("Joint E");
-    ROS_INFO(s2.c_str());
-
-    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(1000);
     rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
 
 
