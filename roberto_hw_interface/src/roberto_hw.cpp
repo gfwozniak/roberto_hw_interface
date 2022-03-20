@@ -2,7 +2,8 @@
 
 Roberto::Roberto(ros::NodeHandle& nh) 
     : nh_(nh),
-    rightDriveTalon(2, interface) // initialize falcons
+    rightDriveTalon(21, interface), // initialize falcons
+    leftDriveTalon(22, interface)
 {
 
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
@@ -68,13 +69,19 @@ void Roberto::init() {
 
 
 
-// JOINT STATE FOR JOINT D
+// JOINT STATE FOR JOINT D (right motor)
     hardware_interface::JointStateHandle jointStateHandleD("JointD", &joint_position_[4], &joint_velocity_[4], &joint_effort_[4]);
     joint_state_interface_.registerHandle(jointStateHandleD);
 // CREATE VELOCITY JOINT INTERFACE AS JOINT D ACCEPTS VELOCITY CMD
-    hardware_interface::JointHandle jointVelocityHandleD(jointStateHandleD, &joint_velocity_command_);
+    hardware_interface::JointHandle jointVelocityHandleD(jointStateHandleD, &joint_velocity_command_[0]);
     velocity_joint_interface_.registerHandle(jointVelocityHandleD);
 
+// JOINT STATE FOR JOINT E (left motor)
+    hardware_interface::JointStateHandle jointStateHandleE("JointE", &joint_position_[5], &joint_velocity_[5], &joint_effort_[5]);
+    joint_state_interface_.registerHandle(jointStateHandleE);
+// CREATE VELOCITY JOINT INTERFACE AS JOINT E ACCEPTS VELOCITY CMD
+    hardware_interface::JointHandle jointVelocityHandleE(jointStateHandleE, &joint_velocity_command_[1]);
+    velocity_joint_interface_.registerHandle(jointVelocityHandleE);
 
 // Register all joints interfaces    
     registerInterface(&joint_state_interface_);
@@ -97,7 +104,7 @@ void Roberto::update(const ros::TimerEvent& e) {
 
 void Roberto::read() {
 //    ROS_INFO("READING"); 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 5; i++)
     {
         joint_position_[i] = 0;
         joint_effort_[i] = 0;
@@ -110,19 +117,26 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    effortJointSaturationInterface.enforceLimits(elapsed_time);   // enforce limits for JointA and JointB
 //    positionJointSaturationInterface.enforceLimits(elapsed_time); // enforce limits for JointC
 
-//    ROS_INFO("WRITING");
-    std::string s;
+    // Right motor control
+    std::string s1;
 
-    // Write the protocol (I2C/CAN/ros_serial/ros_industrial)used to send the commands to the robot's actuators.
-    // the output commands need to send are joint_effort_command_[0] for JointA, joint_effort_command_[1] for JointB and 
-
-    //joint_position_command_ for JointC.
-
-    s = std::to_string(joint_velocity_command_);
-    ROS_INFO(s.c_str());
+    s1 = std::to_string(joint_velocity_command_[0]);
+    ROS_INFO("Joint D");
+    ROS_INFO(s1.c_str());
 
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_);
+    rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[0]);
+
+    // Left motor control
+    std::string s2;
+
+    s2 = std::to_string(joint_velocity_command_[1]);
+    ROS_INFO("Joint E");
+    ROS_INFO(s2.c_str());
+
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
+    rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
+
 
 }
 

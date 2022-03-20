@@ -42,3 +42,6 @@ joint_limits:
     JointD:
       has_position_limits: false
 
+    JointE:
+      has_position_limits: false
+

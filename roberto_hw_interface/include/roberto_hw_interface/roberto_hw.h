@@ -29,24 +29,25 @@ class Roberto : public hardware_interface::RobotHW
         void write(ros::Duration elapsed_time);
         
     protected:
-        hardware_interface::JointStateInterface joint_state_interface_;
+        hardware_interface::JointStateInterface joint_state_interface_; // All joint states 
 //        hardware_interface::EffortJointInterface effort_joint_interface_;
 //        hardware_interface::PositionJointInterface position_joint_interface_;
-        hardware_interface::VelocityJointInterface velocity_joint_interface_;
+        hardware_interface::VelocityJointInterface velocity_joint_interface_; // right motor 0, left motor 1 
         
 //        joint_limits_interface::JointLimits limits;
 //        joint_limits_interface::EffortJointSaturationInterface effortJointSaturationInterface;
 //        joint_limits_interface::PositionJointSaturationInterface positionJointSaturationInterface;
         
         ctre::phoenix::motorcontrol::can::TalonFX rightDriveTalon;
+        ctre::phoenix::motorcontrol::can::TalonFX leftDriveTalon;
         std::string interface = "can0";
 
-        double joint_position_[4];
-        double joint_velocity_[4];
-        double joint_effort_[4];
+        double joint_position_[5];
+        double joint_velocity_[5];
+        double joint_effort_[5]; // right motor 3, left motor 4
 //        double joint_effort_command_[2];
 //        double joint_position_command_;
-        double joint_velocity_command_;
+        double joint_velocity_command_[2]; // right motor 0, left motor 1
         
         ros::NodeHandle nh_;
         ros::Timer my_control_loop_;

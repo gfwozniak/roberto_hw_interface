@@ -23,4 +23,8 @@ Roberto:
       type: velocity_controllers/JointVelocityController
       joint: JointD
 
+    JointE_VelocityController:
+      type: velocity_controllers/JointVelocityController
+      joint: JointE
+
       # No PID values defined since this controller simply passes the input position command to the actuators.

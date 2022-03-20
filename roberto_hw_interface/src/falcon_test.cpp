@@ -16,8 +16,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 
 /* make some talons for drive train */
 std::string interface = "can0";
-TalonSRX talLeft(1, interface); //Use the specified interface
-TalonSRX talRght(0); //Use the default interface (can0)
+TalonFX talLeft(22, interface); //Use the specified interface
+//TalonSRX talRght(0); //Use the default interface (can0)
 
 /** simple wrapper for code cleanup */
 void sleepApp(int ms)
@@ -28,9 +28,11 @@ void sleepApp(int ms)
 int main() 
 {	
 	ctre::phoenix::unmanaged::Unmanaged::FeedEnable(10000);
-	talLeft.Set(ControlMode::PercentOutput, .5);
+	talLeft.Set(ControlMode::PercentOutput, .2);
+	std::cout << "Running motor for 10 seconds";
 	sleepApp(10000);
 	talLeft.Set(ControlMode::PercentOutput, 0);
+	std::cout << "Motor off";
 
 	return 0;
 }
