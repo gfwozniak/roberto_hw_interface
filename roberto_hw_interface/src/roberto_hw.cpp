@@ -124,7 +124,7 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    ROS_INFO("Joint D");
 //    ROS_INFO(s1.c_str());
 
-    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(1000);
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
     rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[0]);
 
     // Left motor control
@@ -134,8 +134,7 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    ROS_INFO("Joint E");
 //    ROS_INFO(s2.c_str());
 
-    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(1000);
-    rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
+    leftDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
 
 
 }
