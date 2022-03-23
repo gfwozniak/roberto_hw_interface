@@ -30,4 +30,4 @@ Roberto:
     JointR_EffortController:
       type: effort_controllers/JointVelocityController
       joint: JointR
-      pid: {p: 0.1, i: 1.0, d: 1.0}
+      pid: {p: 0.0001, i: 1.0, d: 1000.0}
