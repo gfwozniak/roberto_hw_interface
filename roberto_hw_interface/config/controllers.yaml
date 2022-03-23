@@ -18,13 +18,16 @@ Roberto:
 #    JointC_PositionController:
 #      type: position_controllers/JointPositionController    # Since JointC uses position interface this controller type is  used 
 #      joint: JointC
-
-    JointD_VelocityController:
-      type: velocity_controllers/JointVelocityController
-      joint: JointD
-
-    JointE_VelocityController:
-      type: velocity_controllers/JointVelocityController
-      joint: JointE
-
-      # No PID values defined since this controller simply passes the input position command to the actuators.
+#
+#    JointD_VelocityController:
+#      type: velocity_controllers/JointVelocityController
+#      joint: JointD
+#
+#    JointE_VelocityController:
+#      type: velocity_controllers/JointVelocityController
+#      joint: JointE
+#
+    JointR_EffortController:
+      type: effort_controllers/JointVelocityController
+      joint: JointR
+      pid: {p: 0.1, i: 1.0, d: 1.0}
