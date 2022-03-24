@@ -5,8 +5,8 @@ Roberto::Roberto(ros::NodeHandle& nh)
     rightDriveTalon(21, interface), // initialize falcons
     leftDriveTalon(22, interface)
 {
-    rightDriveTalon.ConfigOpenloopRamp(1);
-    leftDriveTalon.ConfigOpenloopRamp(1);
+    rightDriveTalon.ConfigOpenloopRamp(2);
+    leftDriveTalon.ConfigOpenloopRamp(2);
 
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
     init();
