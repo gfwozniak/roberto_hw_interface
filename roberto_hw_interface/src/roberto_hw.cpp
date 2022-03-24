@@ -5,6 +5,8 @@ Roberto::Roberto(ros::NodeHandle& nh)
     rightDriveTalon(21, interface), // initialize falcons
     leftDriveTalon(22, interface)
 {
+    rightDriveTalon.ConfigOpenloopRamp(1);
+    leftDriveTalon.ConfigOpenloopRamp(1);
 
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
     init();
@@ -78,6 +80,7 @@ void Roberto::init() {
     joint_limits_interface::getJointLimits("JointR", nh_, limits);
     joint_limits_interface::EffortJointSaturationHandle jointLimitsHandleR(jointEffortHandleR, limits);
     effortJointSaturationInterface.registerHandle(jointLimitsHandleR);    
+
 /*
 // JOINT STATE FOR JOINT L (left motor)
     hardware_interface::JointStateHandle jointStateHandleL("JointL", &joint_position_[1], &joint_velocity_[1], &joint_effort_[1]);
@@ -86,7 +89,13 @@ void Roberto::init() {
 // Turst the processs
     hardware_interface::JointHandle jointEffortHandleL(jointStateHandleL, &joint_effort_command_[1]);
     effort_joint_interface_.registerHandle(jointEffortHandleL);
+
+// Create Joint Limit interface for JointL
+    joint_limits_interface::getJointLimits("JointL", nh_, limits);
+    joint_limits_interface::EffortJointSaturationHandle jointLimitsHandleL(jointEffortHandleL, limits);
+    effortJointSaturationInterface.registerHandle(jointLimitsHandleL);    
 */
+
 // Register all joints interfaces    
     registerInterface(&joint_state_interface_);
     registerInterface(&effort_joint_interface_);
