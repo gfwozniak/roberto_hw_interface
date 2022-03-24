@@ -79,7 +79,7 @@ void Roberto::init() {
     joint_limits_interface::EffortJointSaturationHandle jointLimitsHandleR(jointEffortHandleR, limits);
     effortJointSaturationInterface.registerHandle(jointLimitsHandleR);    
 
-/*
+
 // JOINT STATE FOR JOINT L (left motor)
     hardware_interface::JointStateHandle jointStateHandleL("JointL", &joint_position_[1], &joint_velocity_[1], &joint_effort_[1]);
     joint_state_interface_.registerHandle(jointStateHandleL);
@@ -92,7 +92,7 @@ void Roberto::init() {
     joint_limits_interface::getJointLimits("JointL", nh_, limits);
     joint_limits_interface::EffortJointSaturationHandle jointLimitsHandleL(jointEffortHandleL, limits);
     effortJointSaturationInterface.registerHandle(jointLimitsHandleL);    
-*/
+
 
 // Register all joints interfaces    
     registerInterface(&joint_state_interface_);
@@ -114,10 +114,14 @@ void Roberto::update(const ros::TimerEvent& e) {
 
 
 void Roberto::read() {
-//    ROS_INFO("READING"); 
+// Joint R read
     joint_position_[0] = rightDriveTalon.GetSelectedSensorPosition();
     joint_velocity_[0] = rightDriveTalon.GetSelectedSensorVelocity();
     ROS_INFO("Current Pos: %.2f, Vel: %.2f",joint_position_[0],joint_velocity_[0]);
+// Joint L read
+    joint_position_[1] = leftDriveTalon.GetSelectedSensorPosition();
+    joint_velocity_[1] = leftDriveTalon.GetSelectedSensorVelocity();
+//    ROS_INFO("Current Pos: %.2f, Vel: %.2f",joint_position_[1],joint_velocity_[1]);
 }
 
 void Roberto::write(ros::Duration elapsed_time) {
@@ -147,7 +151,8 @@ void Roberto::write(ros::Duration elapsed_time) {
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
     rightDriveTalon.Set(ControlMode::PercentOutput, joint_effort_command_[0]);
     ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
-
+    leftDriveTalon.Set(ControlMode::PercentOutput, joint_effort_command_[1]);
+//    ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
 }
 
 

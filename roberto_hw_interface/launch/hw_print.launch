@@ -11,6 +11,7 @@
         args="
             /Roberto/joints_update
             /Roberto/JointR_EffortController
+            /Roberto/JointL_EffortController
         "/> 
 <!--
   <node name="topic_convert" pkg="roberto_hw_interface" type="topic_convert">
