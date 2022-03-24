@@ -6,6 +6,9 @@ Roberto::Roberto(ros::NodeHandle& nh)
     leftDriveTalon(22, interface)
 {
 
+rightDriveTalon.ConfigNeutralDeadband(0.01); /* Configures _talon to use a neutral deadband of 0.1% */
+leftDriveTalon.ConfigNeutralDeadband(0.01); /* Configures _talon to use a neutral deadband of 0.1% */
+
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
     init();
     
