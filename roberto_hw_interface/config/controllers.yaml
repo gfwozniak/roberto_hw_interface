@@ -31,3 +31,8 @@ Roberto:
       type: effort_controllers/JointVelocityController
       joint: JointR
       pid: {p: 0, i: 0, d: 0}
+
+#    JointL_EffortController:
+#      type: effort_controllers/JointVelocityController
+#      joint: JointL
+#      pid: {p: 0, i: 0, d: 0}
