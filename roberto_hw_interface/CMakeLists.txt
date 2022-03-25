@@ -239,3 +239,6 @@ target_link_libraries(falcon_test
 
 add_executable(topic_convert src/topic_convert.cpp)
 target_link_libraries(topic_convert ${catkin_LIBRARIES})
+
+add_executable(diff_drive src/diff_drive.cpp)
+target_link_libraries(diff_drive ${catkin_LIBRARIES})

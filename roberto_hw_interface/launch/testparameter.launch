@@ -1,0 +1,13 @@
+<launch>
+
+  <node name="diff_drive" pkg="roberto_hw_interface" type="diff_drive" output="screen">
+  <!--
+    <remap from="output" to="Roberto/JointD_VelocityController/command"/>
+    -->
+    <param name="totalMod"    value="1.0"/>
+    <param name="leftMod"  value="1.0"/>
+    <param name="rightMod"  value="1.0"/>
+    <param name="turnMod"  value="1.0"/>
+  </node>
+
+</launch>
