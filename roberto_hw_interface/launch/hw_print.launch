@@ -19,4 +19,13 @@
   </node>
 -->
 
+  <node name="diff_drive" pkg="roberto_hw_interface" type="diff_drive" output="screen">
+    <remap from="outputRight" to="Roberto/JointR_EffortController/command"/>
+    <remap from="outputLeft" to="Roberto/JointL_EffortController/command"/>
+    <param name="totalMod"    value="1.0"/>
+    <param name="leftMod"  value="1.0"/>
+    <param name="rightMod"  value="1.0"/>
+    <param name="turnMod"  value="1.0"/>
+  </node>
+
 </launch>
