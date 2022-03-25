@@ -23,8 +23,8 @@
     <remap from="outputLeft" to="Roberto/JointR_EffortController/command"/>
     <remap from="outputRight" to="Roberto/JointL_EffortController/command"/>
     <param name="totalMod"    value="1.0"/>
-    <param name="leftMod"  value="1.0"/>
-    <param name="rightMod"  value="-2.25"/>
+    <param name="leftMod"  value="2.25"/>
+    <param name="rightMod"  value="-1.0"/>
     <param name="turnMod"  value="1.0"/>
   </node>
 
