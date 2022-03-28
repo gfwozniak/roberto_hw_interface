@@ -23,32 +23,33 @@ class Roberto : public hardware_interface::RobotHW
     public:
         Roberto(ros::NodeHandle& nh);
         ~Roberto();
-        void init();
+        void initJoints();
+        void initDrive();
         void update(const ros::TimerEvent& e);
         void read();
         void write(ros::Duration elapsed_time);
         
     protected:
         hardware_interface::JointStateInterface joint_state_interface_; // All joint states 
+        hardware_interface::VelocityJointInterface velocity_joint_interface_;
 //        hardware_interface::PositionJointInterface position_joint_interface_;
-//        hardware_interface::VelocityJointInterface velocity_joint_interface_;
-        hardware_interface::EffortJointInterface effort_joint_interface_;
+//        hardware_interface::EffortJointInterface effort_joint_interface_;
         
         joint_limits_interface::JointLimits limits;
-        joint_limits_interface::EffortJointSaturationInterface effortJointSaturationInterface;
+        joint_limits_interface::VelocityJointSaturationInterface velocityJointSaturationInterface;
+//        joint_limits_interface::EffortJointSaturationInterface effortJointSaturationInterface;
 //        joint_limits_interface::PositionJointSaturationInterface positionJointSaturationInterface;
+        
+        std::string joint_name_[2]={"left_wheel_joint","right_wheel_joint"};  
+        double joint_position_[2];
+        double joint_velocity_[2];
+        double joint_effort_[2]; // right motor 3, left motor 4
+        double joint_velocity_command_[2]; // right motor 0, left motor 1
         
         ctre::phoenix::motorcontrol::can::TalonFX rightDriveTalon;
         ctre::phoenix::motorcontrol::can::TalonFX leftDriveTalon;
         std::string interface = "can0";
 
-        double joint_position_[2];
-        double joint_velocity_[2];
-        double joint_effort_[2]; // right motor 3, left motor 4
-        double joint_effort_command_[2];
-//        double joint_position_command_;
-        double joint_velocity_command_[2]; // right motor 0, left motor 1
-        
         ros::NodeHandle nh_;
         ros::Timer my_control_loop_;
         ros::Duration elapsed_time_;

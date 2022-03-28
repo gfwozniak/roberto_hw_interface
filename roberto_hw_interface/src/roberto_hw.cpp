@@ -6,11 +6,9 @@ Roberto::Roberto(ros::NodeHandle& nh)
     leftDriveTalon(22, interface)
 {
 
-rightDriveTalon.ConfigNeutralDeadband(0.01); /* Configures _talon to use a neutral deadband of 0.1% */
-leftDriveTalon.ConfigNeutralDeadband(0.01); /* Configures _talon to use a neutral deadband of 0.1% */
-
 // Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
-    init();
+    initJoints();
+    initDrive();
     
 // Create the controller manager
     controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
@@ -28,7 +26,7 @@ Roberto::~Roberto() {
 }
 
 
-void Roberto::init() {
+void Roberto::initJoints() {
         
 //// Create joint_state_interface for JointA
 //    hardware_interface::JointStateHandle jointStateHandleA("JointA", &joint_position_[0], &joint_velocity_[0], &joint_effort_[0]);
@@ -69,41 +67,47 @@ void Roberto::init() {
 //    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleC(jointPositionHandleC, limits);
 //    positionJointSaturationInterface.registerHandle(jointLimitsHandleC);    
 
-// JOINT STATE FOR JOINT R (right motor)
-    hardware_interface::JointStateHandle jointStateHandleR("JointR", &joint_position_[0], &joint_velocity_[0], &joint_effort_[0]);
-    joint_state_interface_.registerHandle(jointStateHandleR);
+	for(int i=0; i<2; i++)
+	{
+	// Create joint state interface
+        hardware_interface::JointStateHandle jointStateHandle(joint_name_[i], &joint_position_[i], &joint_velocity_[i], &joint_effort_[i]);
+        joint_state_interface_.registerHandle(jointStateHandle);
+       
+    // Create velocity joint interface
+	    hardware_interface::JointHandle jointVelocityHandle(jointStateHandle, &joint_velocity_command_[i]);
+        velocity_joint_interface_.registerHandle(jointVelocityHandle);
 
-// Trust the process
-    hardware_interface::JointHandle jointEffortHandleR(jointStateHandleR, &joint_effort_command_[0]);
-    effort_joint_interface_.registerHandle(jointEffortHandleR);
+    // Create Joint Limit interface   
+        joint_limits_interface::JointLimits limits;
+        joint_limits_interface::getJointLimits(joint_name_[i], nh_, limits);
+	    joint_limits_interface::VelocityJointSaturationHandle jointLimitsHandle(jointVelocityHandle, limits);
+	    velocityJointSaturationInterface.registerHandle(jointLimitsHandle);
 
-// Create Joint Limit interface for JointR
-    joint_limits_interface::getJointLimits("JointR", nh_, limits);
-    joint_limits_interface::EffortJointSaturationHandle jointLimitsHandleR(jointEffortHandleR, limits);
-    effortJointSaturationInterface.registerHandle(jointLimitsHandleR);    
-
-
-// JOINT STATE FOR JOINT L (left motor)
-    hardware_interface::JointStateHandle jointStateHandleL("JointL", &joint_position_[1], &joint_velocity_[1], &joint_effort_[1]);
-    joint_state_interface_.registerHandle(jointStateHandleL);
-
-// Turst the processs
-    hardware_interface::JointHandle jointEffortHandleL(jointStateHandleL, &joint_effort_command_[1]);
-    effort_joint_interface_.registerHandle(jointEffortHandleL);
-
-// Create Joint Limit interface for JointL
-    joint_limits_interface::getJointLimits("JointL", nh_, limits);
-    joint_limits_interface::EffortJointSaturationHandle jointLimitsHandleL(jointEffortHandleL, limits);
-    effortJointSaturationInterface.registerHandle(jointLimitsHandleL);    
-
+	}
 
 // Register all joints interfaces    
     registerInterface(&joint_state_interface_);
-    registerInterface(&effort_joint_interface_);
+    registerInterface(&velocity_joint_interface_);
+    registerInterface(&velocityJointSaturationInterface);
+//    registerInterface(&effort_joint_interface_);
 //    registerInterface(&position_joint_interface_);
-//    registerInterface(&velocity_joint_interface_);
-    registerInterface(&effortJointSaturationInterface);
-//    registerInterface(&positionJointSaturationInterface);    
+//    registerInterface(&effortJointSaturationInterface);
+//    registerInterface(&positionJointSaturationInterface);
+}
+
+void Roberto::initDrive() 
+{
+    TalonFXConfiguration config;
+
+    ros::param::get("~drive_kP", config.slot0.kP);
+    ros::param::get("~drive_kI", config.slot0.kI);
+    ros::param::get("~drive_kD", config.slot0.kD);
+    ros::param::get("~drive_kF", config.slot0.kF);
+    ros::param::get("~drive_ramp", config.closedloopRamp);
+	config.slot0.maxIntegralAccumulator = 16000;
+
+	rightDriveTalon.ConfigAllSettings(config);
+	leftDriveTalon.ConfigAllSettings(config);
 }
 
 
@@ -120,16 +124,18 @@ void Roberto::read() {
 // Joint R read
     joint_position_[0] = rightDriveTalon.GetSelectedSensorPosition();
     joint_velocity_[0] = rightDriveTalon.GetSelectedSensorVelocity();
+    joint_effort_[0] = rightDriveTalon.GetSupplyCurrent();
     ROS_INFO("Current Pos: %.2f, Vel: %.2f",joint_position_[0],joint_velocity_[0]);
 // Joint L read
     joint_position_[1] = leftDriveTalon.GetSelectedSensorPosition();
     joint_velocity_[1] = leftDriveTalon.GetSelectedSensorVelocity();
+    joint_effort_[1] = leftDriveTalon.GetSupplyCurrent();
 //    ROS_INFO("Current Pos: %.2f, Vel: %.2f",joint_position_[1],joint_velocity_[1]);
 }
 
 void Roberto::write(ros::Duration elapsed_time) {
     // Safety
-    effortJointSaturationInterface.enforceLimits(elapsed_time);   // enforce limits for JointA and JointB
+    velocityJointSaturationInterface.enforceLimits(elapsed_time);   // enforce limits for JointA and JointB
 //    positionJointSaturationInterface.enforceLimits(elapsed_time); // enforce limits for JointC
 
     // Right motor control
@@ -152,9 +158,9 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    leftDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
 
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveTalon.Set(ControlMode::PercentOutput, joint_effort_command_[0]);
-    ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
-    leftDriveTalon.Set(ControlMode::PercentOutput, joint_effort_command_[1]);
+    rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[0]);
+    ROS_INFO("%%Out Cmd: %.2f",joint_velocity_command_[0]);
+    leftDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
 //    ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
 }
 
