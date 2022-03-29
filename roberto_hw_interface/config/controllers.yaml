@@ -7,8 +7,8 @@ Roberto:
 
     drivetrain_controller:
       type        : "diff_drive_controller/DiffDriveController"
-      left_wheel  : 'left_wheel_joint'
-      right_wheel : 'right_wheel_joint'
+      left_wheel  : 'wheel_joint_0'
+      right_wheel : 'wheel_joint_1'
       publish_rate: 50.0               # default: 50
       pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
       twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]

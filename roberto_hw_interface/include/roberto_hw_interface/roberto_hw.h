@@ -40,7 +40,7 @@ class Roberto : public hardware_interface::RobotHW
 //        joint_limits_interface::EffortJointSaturationInterface effortJointSaturationInterface;
 //        joint_limits_interface::PositionJointSaturationInterface positionJointSaturationInterface;
         
-        std::string joint_name_[2]={"left_wheel_joint","right_wheel_joint"};  
+        std::string joint_name_[2]={"wheel_joint_0","wheel_joint_1"};  
         double joint_position_[2];
         double joint_velocity_[2];
         double joint_effort_[2]; // right motor 3, left motor 4

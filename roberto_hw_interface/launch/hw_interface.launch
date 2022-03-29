@@ -2,6 +2,7 @@
     
   <rosparam file="$(find roberto_hw_interface)/config/controllers.yaml" command="load"/>
   <rosparam file="$(find roberto_hw_interface)/config/joint_limits.yaml" command="load"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
 
   <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw">
       <param name="drive_kP"    value="0.1"/>
