@@ -1,5 +1,0 @@
-differential_drive:
-  totalMod: 1.0;
-  leftMod: 1.0;
-  rightMod: 1.0;
-    

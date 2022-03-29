@@ -1,8 +1,11 @@
+<?xml version="1.0"?>
 <launch>
-    
   <rosparam file="$(find roberto_hw_interface)/config/controllers.yaml" command="load"/>
   <rosparam file="$(find roberto_hw_interface)/config/joint_limits.yaml" command="load"/>
+
+<!--
   <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+-->
 
   <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw">
       <param name="drive_kP"    value="0.1"/>
@@ -14,20 +17,10 @@
 
   <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/> -->
     
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen">
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
         args="
             /Roberto/joints_update
-            /Roberto/drivetrain_controller
-        "/> 
-  </node>
-
-  <node name="diff_drive" pkg="roberto_hw_interface" type="diff_drive" output="screen">
-    <remap from="outputLeft" to="Roberto/JointR_EffortController/command"/>
-    <remap from="outputRight" to="Roberto/JointL_EffortController/command"/>
-    <param name="totalMod"    value="1.0"/>
-    <param name="leftMod"  value="2.25"/>
-    <param name="rightMod"  value="-1.0"/>
-    <param name="turnMod"  value="1.0"/>
+            /Roberto/drivetrain_controller" > 
   </node>
 
 </launch>

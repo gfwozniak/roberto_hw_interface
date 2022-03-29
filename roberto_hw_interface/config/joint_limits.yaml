@@ -1,5 +1,4 @@
 joint_limits:
-
     wheel_joint_0:
       has_position_limits: false
       min_position: 0

@@ -135,7 +135,7 @@ void Roberto::read() {
 
 void Roberto::write(ros::Duration elapsed_time) {
     // Safety
-    velocityJointSaturationInterface.enforceLimits(elapsed_time);   // enforce limits for JointA and JointB
+//    velocityJointSaturationInterface.enforceLimits(elapsed_time);   // enforce limits for JointA and JointB
 //    positionJointSaturationInterface.enforceLimits(elapsed_time); // enforce limits for JointC
 
     // Right motor control
