@@ -7,10 +7,12 @@ ros_control hardware interface for Roberto the Moon Roomba
 ## software requirements:
 - You need ROS Melodic for this package to work
 
-when first running this package:
+### after installing this package:
 Go to the top directory of your catkin workspace where the source code of the ROS packages you'd like to use are. Then run:
-```rosdep install --from-paths src --ignore-src -r -y```
-then ```catkin_make``` to build the C++ nodes
+```rosdep install --from-paths src --ignore-src -r -y``` then ```catkin_make``` to build the C++ nodes
+
+### then after every system restart
+Go find the canableStart.sh bash script and run it with the CANable device plugged in (should switch from blue to green light)
 
 then to run the launch file:
 ```roslaunch roberto_hw_interface hw_interface.launch```
