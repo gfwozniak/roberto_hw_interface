@@ -1,13 +1,13 @@
 #include <roberto_hw_interface/topic_convert.h>
 
-Repub::Repub(ros::Publisher * publisher)
+TopicConvert::Republisher::Republisher(ros::Publisher * publisher)
 : output(publisher)
 {
     // Nothing, constructor
 }
 
 // Callback method
-void Repub::callback(const geometry_msgs::Twist::ConstPtr& imsg)
+void TopicConvert::Republisher::callback(const geometry_msgs::Twist::ConstPtr& imsg)
 {
     std_msgs::Float64 omsg;
     omsg.data = imsg->linear.x;
@@ -27,10 +27,10 @@ int main(int argc, char **argv)
   // an object with a method to process the callback. This was
   // the simplest way I could think to have the subscribe callback 
   // function publish on a topic.
-  Repub outputObj(&output);
+  TopicConvert::Republisher outputObj(&output);
 
   // Initialize subscribing on topic "input" to call with callback method in Repub instance
-  ros::Subscriber input = n.subscribe("input", 1000, &Repub::callback, &outputObj);
+  ros::Subscriber input = n.subscribe("input", 1000, &TopicConvert::Republisher::callback, &outputObj);
 
   // Spin (pump callbacks for subscribe function)
   ros::spin();

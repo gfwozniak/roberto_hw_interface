@@ -2,12 +2,15 @@
 #include "geometry_msgs/Twist.h"
 #include "std_msgs/Float64.h"
 
-class Repub 
+namespace TopicConvert
 {
-    private:
-    ros::Publisher * output;
+    class Republisher 
+    {
+        private:
+        ros::Publisher * output;
 
-    public:
-    Repub(ros::Publisher * publisher);
-    void callback(const geometry_msgs::Twist::ConstPtr& imsg);
-};
+        public:
+        Republisher(ros::Publisher * publisher);
+        void callback(const geometry_msgs::Twist::ConstPtr& imsg);
+    };
+}

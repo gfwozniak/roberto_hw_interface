@@ -1,6 +1,6 @@
 #include <roberto_hw_interface/diff_drive.h>
 
-Repub::Repub(ros::Publisher * publisherRight, ros::Publisher * publisherLeft)
+DiffDrive::Republisher::Republisher(ros::Publisher * publisherRight, ros::Publisher * publisherLeft)
 : outputLeft(publisherLeft),
 outputRight(publisherRight)
 {
@@ -12,7 +12,7 @@ outputRight(publisherRight)
 }
 
 // Callback method
-void Repub::callback(const geometry_msgs::Twist::ConstPtr& imsg)
+void DiffDrive::Republisher::callback(const geometry_msgs::Twist::ConstPtr& imsg)
 {
 	double x = imsg->linear.x;
 	double z = imsg->angular.z;
@@ -54,10 +54,10 @@ int main(int argc, char **argv)
 	// an object with a method to process the callback. This was
 	// the simplest way I could think to have the subscribe callback 
 	// function publish on a topic.
-	Repub outputObj(&outputRight, &outputLeft);
+	DiffDrive::Republisher outputObj(&outputRight, &outputLeft);
 
 	// Initialize subscribing on topic "input" to call with callback method in Repub instance
-	ros::Subscriber input = n.subscribe("input", 1000, &Repub::callback, &outputObj);
+	ros::Subscriber input = n.subscribe("input", 1000, &DiffDrive::Republisher::callback, &outputObj);
 
 	// Spin (pump callbacks for subscribe function)
 	ros::spin();
