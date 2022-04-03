@@ -7,6 +7,7 @@
 #include <controller_manager/controller_manager.h>
 #include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
+#include <std_msgs/Float64.h>
 
 // UPDATED PHOENIX INCLUDE
 #define Phoenix_No_WPI // remove WPI dependencies
@@ -25,6 +26,7 @@ class Roberto : public hardware_interface::RobotHW
         ~Roberto();
         void initRosControlJoints(); // Initializes all ros_control joints
         void initPhoenixObjects(); // Configures all falcon motors
+        void initPositionPublishers(); // Advertises position states
         void update(const ros::TimerEvent& e);
         void read();
         void write(ros::Duration elapsed_time);
@@ -73,4 +75,7 @@ class Roberto : public hardware_interface::RobotHW
         ros::Duration elapsed_time_;
         double loop_hz_;
         boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
+
+        ros::Publisher bscrew_pos_pub;
+        ros::Publisher actuator_pos_pub;
 };

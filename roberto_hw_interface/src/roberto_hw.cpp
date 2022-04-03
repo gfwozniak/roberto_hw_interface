@@ -8,9 +8,9 @@ Roberto::Roberto(ros::NodeHandle& nh)
     ballScrewFalcon(41)
 {
 
-// Declare all JointHandles, JointInterfaces and JointLimitInterfaces of the robot.
     initRosControlJoints();
     initPhoenixObjects();
+    initPositionPublishers();
     
 // Create the controller manager
     controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
@@ -27,6 +27,10 @@ Roberto::Roberto(ros::NodeHandle& nh)
 Roberto::~Roberto() {
 }
 
+void Roberto::initPositionPublishers() {
+    bscrew_pos_pub = nh_.advertise<std_msgs::Float64>("bscrew_pos_state", 1);
+    actuator_pos_pub = nh_.advertise<std_msgs::Float64>("actuator_pos_state", 1);
+}
 
 void Roberto::initRosControlJoints() {
         
@@ -117,6 +121,23 @@ void Roberto::update(const ros::TimerEvent& e) {
 
 
 void Roberto::read() {
+
+// BALL SCREW JOINT READS (FAKE)
+    bscrew_joint_position_ = 0;
+    bscrew_joint_velocity_ = 0;
+    bscrew_joint_effort_ = 0;
+    std_msgs::Float64 bscrew_msg;
+    bscrew_msg.data = auger_joint_position_;
+    bscrew_pos_pub.publish(bscrew_msg);
+
+// LINEAR ACTUATOR JOINT READS (FAKE)
+    actuator_joint_position_ = 0;
+    actuator_joint_velocity_ = 0;
+    actuator_joint_effort_ = 0;
+    std_msgs::Float64 actuator_msg;
+    actuator_msg.data = auger_joint_position_;
+    actuator_pos_pub.publish(actuator_msg);
+
 // AUGER JOINT READS (FAKE)
     auger_joint_position_ = 0;
     auger_joint_velocity_ = 0;
