@@ -4,6 +4,18 @@ Roberto:
       type: joint_state_controller/JointStateController
       publish_rate: 50
 
+    actuator_pos_controller:
+      type: position_controllers/JointPositionController
+      joint: actuator_joint
+
+    bscrew_pos_controller:
+      type: position_controllers/JointPositionController
+      joint: bscrew_joint
+
+    auger_controller:
+      type: velocity_controllers/JointVelocityController
+      joint: auger_joint
+
     drivetrain_controller:
       type        : "diff_drive_controller/DiffDriveController"
       left_wheel  : 'wheel_joint_0'

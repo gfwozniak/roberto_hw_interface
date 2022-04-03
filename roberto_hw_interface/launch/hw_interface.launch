@@ -20,6 +20,9 @@
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
         args="
             /Roberto/joints_update
+            /Roberto/auger_controller
+            /Roberto/actuator_pos_controller
+            /Roberto/bscrew_pos_controller
             /Roberto/drivetrain_controller" > 
   </node>
 
