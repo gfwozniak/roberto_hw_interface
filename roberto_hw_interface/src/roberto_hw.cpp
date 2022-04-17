@@ -178,12 +178,12 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    leftDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
 
     // AUGER WRITES
-    ROS_INFO("Velocity Cmd: %.2f", auger_joint_velocity_command_);
+//    ROS_INFO("Velocity Cmd: %.2f", auger_joint_velocity_command_);
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
     rightDriveFalcon.Set(ControlMode::PercentOutput, wheel_joint_velocity_command_[0]);
-    ROS_INFO("%%Out Cmd: %.2f",wheel_joint_velocity_command_[0]);
+    ROS_INFO("Right Wheel Cmd: %.2f",wheel_joint_velocity_command_[0]);
     leftDriveFalcon.Set(ControlMode::PercentOutput, wheel_joint_velocity_command_[1]);
 //    ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
 }
