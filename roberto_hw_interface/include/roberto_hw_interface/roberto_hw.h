@@ -69,6 +69,7 @@ class Roberto : public hardware_interface::RobotHW
         ctre::phoenix::motorcontrol::can::TalonFX leftDriveFalcon;
         ctre::phoenix::motorcontrol::can::TalonSRX linearActuatorTalon;
         ctre::phoenix::motorcontrol::can::TalonFX ballScrewFalcon;
+        ctre::phoenix::motorcontrol::can::TalonFX augerFalcon;
 
         ros::NodeHandle nh_;
         ros::Timer my_control_loop_;

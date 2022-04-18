@@ -5,7 +5,8 @@ Roberto::Roberto(ros::NodeHandle& nh)
     rightDriveFalcon(21), // initialize falcons
     leftDriveFalcon(22),
     linearActuatorTalon(31),
-    ballScrewFalcon(41)
+    ballScrewFalcon(41),
+    augerFalcon(42)
 {
 
     initRosControlJoints();
@@ -34,30 +35,37 @@ void Roberto::initPositionPublishers() {
 
 void Roberto::initRosControlJoints() {
         
-// LINEAR ACTUATOR JOINT
+//// LINEAR ACTUATOR JOINT
+//// Create joint_state_interface 
+//    hardware_interface::JointStateHandle jointStateHandleActuator("actuator_joint", &actuator_joint_position_, &actuator_joint_velocity_, &actuator_joint_effort_);
+//    joint_state_interface_.registerHandle(jointStateHandleActuator);
+//// Create position joint interface accepts position command.
+//    hardware_interface::JointHandle jointPositionHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
+//    position_joint_interface_.registerHandle(jointPositionHandleActuator);
+//// Create Joint Limit interface 
+//    joint_limits_interface::getJointLimits("actuator_joint", nh_, limits);
+//    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleActuator(jointPositionHandleActuator, limits);
+//    positionJointSaturationInterface.registerHandle(jointLimitsHandleActuator);    
+
+// LINEAR ACTUATOR JOINT (velocity edition)
 // Create joint_state_interface 
     hardware_interface::JointStateHandle jointStateHandleActuator("actuator_joint", &actuator_joint_position_, &actuator_joint_velocity_, &actuator_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleActuator);
 // Create position joint interface accepts position command.
-    hardware_interface::JointHandle jointPositionHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
-    position_joint_interface_.registerHandle(jointPositionHandleActuator);
-// Create Joint Limit interface 
-    joint_limits_interface::getJointLimits("actuator_joint", nh_, limits);
-    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleActuator(jointPositionHandleActuator, limits);
-    positionJointSaturationInterface.registerHandle(jointLimitsHandleActuator);    
+    hardware_interface::JointHandle jointVelocityHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
+    velocity_joint_interface_.registerHandle(jointVelocityHandleActuator);
 
-
-// BALL SCREW JOINT
-// Create joint_state_interface 
-    hardware_interface::JointStateHandle jointStateHandleBScrew("bscrew_joint", &bscrew_joint_position_, &bscrew_joint_velocity_, &bscrew_joint_effort_);
-    joint_state_interface_.registerHandle(jointStateHandleBScrew);
-// Create position joint interface accepts position command.
-    hardware_interface::JointHandle jointPositionHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
-    position_joint_interface_.registerHandle(jointPositionHandleBScrew);
-// Create Joint Limit interface 
-    joint_limits_interface::getJointLimits("bscrew_joint", nh_, limits);
-    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleBScrew(jointPositionHandleBScrew, limits);
-    positionJointSaturationInterface.registerHandle(jointLimitsHandleBScrew);    
+//// BALL SCREW JOINT
+//// Create joint_state_interface 
+//    hardware_interface::JointStateHandle jointStateHandleBScrew("bscrew_joint", &bscrew_joint_position_, &bscrew_joint_velocity_, &bscrew_joint_effort_);
+//    joint_state_interface_.registerHandle(jointStateHandleBScrew);
+//// Create position joint interface accepts position command.
+//    hardware_interface::JointHandle jointPositionHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
+//    position_joint_interface_.registerHandle(jointPositionHandleBScrew);
+//// Create Joint Limit interface 
+//    joint_limits_interface::getJointLimits("bscrew_joint", nh_, limits);
+//    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleBScrew(jointPositionHandleBScrew, limits);
+//    positionJointSaturationInterface.registerHandle(jointLimitsHandleBScrew);    
 
 
 // AUGER JOINT
@@ -182,10 +190,13 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::PercentOutput, -wheel_joint_velocity_command_[0]);
-    ROS_INFO("Right Wheel Cmd: %.2f",wheel_joint_velocity_command_[0]);
-    leftDriveFalcon.Set(ControlMode::PercentOutput, wheel_joint_velocity_command_[1]);
+    rightDriveFalcon.Set(ControlMode::PercentOutput, wheel_joint_velocity_command_[0]);
+    leftDriveFalcon.Set(ControlMode::PercentOutput, -wheel_joint_velocity_command_[1]);
 //    ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
+
+    // ACTUATOR WRITES
+    linearActuatorTalon.Set(ControlMode::PercentOutput, actuator_joint_position_command_);
+    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
 }
 
 
