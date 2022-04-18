@@ -182,7 +182,7 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::PercentOutput, wheel_joint_velocity_command_[0]);
+    rightDriveFalcon.Set(ControlMode::PercentOutput, -wheel_joint_velocity_command_[0]);
     ROS_INFO("Right Wheel Cmd: %.2f",wheel_joint_velocity_command_[0]);
     leftDriveFalcon.Set(ControlMode::PercentOutput, wheel_joint_velocity_command_[1]);
 //    ROS_INFO("%%Out Cmd: %.2f",joint_effort_command_[0]);
