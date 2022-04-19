@@ -5,8 +5,8 @@ Roberto::Roberto(ros::NodeHandle& nh)
     rightDriveFalcon(21), // initialize falcons
     leftDriveFalcon(22),
     linearActuatorTalon(31),
-    ballScrewFalcon(41),
-    augerFalcon(42)
+    ballScrewFalcon(32),
+    augerFalcon(41)
 {
 
     initRosControlJoints();
@@ -67,6 +67,13 @@ void Roberto::initRosControlJoints() {
 //    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleBScrew(jointPositionHandleBScrew, limits);
 //    positionJointSaturationInterface.registerHandle(jointLimitsHandleBScrew);    
 
+// BALL SCREW JOINT (velocity edition)
+// Create joint_state_interface 
+    hardware_interface::JointStateHandle jointStateHandleBScrew("bscrew_joint", &bscrew_joint_position_, &bscrew_joint_velocity_, &bscrew_joint_effort_);
+    joint_state_interface_.registerHandle(jointStateHandleBScrew);
+// Create position joint interface accepts position command.
+    hardware_interface::JointHandle jointVelocityHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
+    velocity_joint_interface_.registerHandle(jointVelocityHandleBScrew);
 
 // AUGER JOINT
 // Create joint state interface
@@ -197,6 +204,12 @@ void Roberto::write(ros::Duration elapsed_time) {
     // ACTUATOR WRITES
     linearActuatorTalon.Set(ControlMode::PercentOutput, actuator_joint_position_command_);
     ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
+
+    // BSCREW WRITES
+    ballScrewFalcon.Set(ControlMode::PercentOutput, bscrew_joint_position_command_);
+
+    // AUGER WRITES
+    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
 }
 
 
