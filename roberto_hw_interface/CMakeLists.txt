@@ -168,7 +168,7 @@ ${catkin_INCLUDE_DIRS}
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
    scripts/runnertest.py
-   scripts/pythonrobotapi.py
+   scripts/fakeapi.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
