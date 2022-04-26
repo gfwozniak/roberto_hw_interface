@@ -1,5 +1,5 @@
 # roberto_hw_interface
-ros_control hardware interface for Roberto the Moon Roomba
+ros_control hardware interface and python api 
 
 ## hardware requirements:
 - You need a CANable usb to can device. Idk why but the phoenix libraries do not work on other can devices
