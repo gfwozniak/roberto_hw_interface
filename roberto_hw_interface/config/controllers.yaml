@@ -4,22 +4,22 @@ Roberto:
       type: joint_state_controller/JointStateController
       publish_rate: 50
 
-#    actuator_pos_controller:
-#      type: position_controllers/JointPositionController
-#      joint: actuator_joint
-#
-#    bscrew_pos_controller:
-#      type: position_controllers/JointPositionController
-#      joint: bscrew_joint
-#
-    bscrew_vel_controller:
-      type: velocity_controllers/JointVelocityController
-      joint: bscrew_joint 
+    actuator_pos_controller:
+      type: position_controllers/JointPositionController
+      joint: actuator_joint
 
-    actuator_vel_controller:
-      type: velocity_controllers/JointVelocityController
-      joint: actuator_joint 
+    bscrew_pos_controller:
+      type: position_controllers/JointPositionController
+      joint: bscrew_joint
 
+#    bscrew_vel_controller:
+#      type: velocity_controllers/JointVelocityController
+#      joint: bscrew_joint 
+#
+#    actuator_vel_controller:
+#      type: velocity_controllers/JointVelocityController
+#      joint: actuator_joint 
+#
     auger_controller:
       type: velocity_controllers/JointVelocityController
       joint: auger_joint

@@ -21,8 +21,8 @@
         args="
             /Roberto/joints_update
             /Roberto/auger_controller
-            /Roberto/actuator_vel_controller
-            /Roberto/bscrew_vel_controller
+            /Roberto/actuator_pos_controller
+            /Roberto/bscrew_pos_controller
             /Roberto/left_wheel_controller
             /Roberto/right_wheel_controller"> 
   </node>

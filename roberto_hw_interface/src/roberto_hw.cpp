@@ -51,9 +51,12 @@ void Roberto::initRosControlJoints() {
 // Create joint_state_interface 
     hardware_interface::JointStateHandle jointStateHandleActuator("actuator_joint", &actuator_joint_position_, &actuator_joint_velocity_, &actuator_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleActuator);
+//// Create position joint interface accepts position command.
+//    hardware_interface::JointHandle jointVelocityHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
+//    velocity_joint_interface_.registerHandle(jointVelocityHandleActuator);
 // Create position joint interface accepts position command.
-    hardware_interface::JointHandle jointVelocityHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
-    velocity_joint_interface_.registerHandle(jointVelocityHandleActuator);
+    hardware_interface::JointHandle jointPositionHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
+    position_joint_interface_.registerHandle(jointPositionHandleActuator);
 
 //// BALL SCREW JOINT
 //// Create joint_state_interface 
@@ -71,9 +74,12 @@ void Roberto::initRosControlJoints() {
 // Create joint_state_interface 
     hardware_interface::JointStateHandle jointStateHandleBScrew("bscrew_joint", &bscrew_joint_position_, &bscrew_joint_velocity_, &bscrew_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleBScrew);
+//// Create position joint interface accepts position command.
+//    hardware_interface::JointHandle jointVelocityHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
+//    velocity_joint_interface_.registerHandle(jointVelocityHandleBScrew);
 // Create position joint interface accepts position command.
-    hardware_interface::JointHandle jointVelocityHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
-    velocity_joint_interface_.registerHandle(jointVelocityHandleBScrew);
+    hardware_interface::JointHandle jointPositionHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
+    position_joint_interface_.registerHandle(jointPositionHandleBScrew);
 
 // AUGER JOINT
 // Create joint state interface

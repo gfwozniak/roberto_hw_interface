@@ -243,3 +243,6 @@ target_link_libraries(topic_convert ${catkin_LIBRARIES})
 
 add_executable(diff_drive src/diff_drive.cpp)
 target_link_libraries(diff_drive ${catkin_LIBRARIES})
+
+add_executable(drive_safety src/drive_safety.cpp)
+target_link_libraries(drive_safety ${catkin_LIBRARIES})
