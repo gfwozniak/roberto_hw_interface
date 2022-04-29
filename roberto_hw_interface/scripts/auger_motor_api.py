@@ -20,7 +20,7 @@ class AugerAPI:
         self.bscrew_position = 0.0
         self.is_moving = False
         rospy.Subscriber('actuator_pos', Float64, self._actuator_callback)
-        rospy.Subscriber('bscrew_pos', Float64, self._actuator_callback)
+        rospy.Subscriber('bscrew_pos', Float64, self._bscrew_callback)
 
 #        # PARAMS
 #        self.actuator_range = rospy.get_param("~actuator_range")
@@ -36,10 +36,11 @@ class AugerAPI:
 #
     def _actuator_callback(self, value):
         self.actuator_position = value.data
-        rospy.loginfo(self.actuator_position)
+        print(self.actuator_position)
 
     def _bscrew_callback(self, value):
         self.bscrew_position = value.data
+        print(self.bscrew_position)
 
 #    def _actuator_callback(self, value):
 #        self.is_moving = value.data
@@ -71,6 +72,9 @@ class AugerAPI:
                 break
             self._bscrew_publisher.publish(Float64(position))
             self._rate.sleep()
+            print((self.bscrew_position < (position + self._bscrew_error)) and (self.bscrew_position > (position - self._bscrew_error)))
+            print(self.bscrew_position)
+            print(position)
         
     def setBScrewPositionAndAugerVelocity(self, position, velocity):
         while not rospy.is_shutdown():

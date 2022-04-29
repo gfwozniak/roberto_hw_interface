@@ -7,6 +7,8 @@ if __name__ == '__main__':
     try:
         rospy.init_node('auger_motor_calls', anonymous=True)
         robot = AugerAPI()
-        robot.setAugerVelocityForDuration(velocity=100, seconds=10)
+        print("Setting actuator position to 100")
+        robot.setActuatorPosition(position=100)
+        print("finished")
     except rospy.ROSInterruptException:
         pass
