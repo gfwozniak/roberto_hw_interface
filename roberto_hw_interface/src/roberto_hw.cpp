@@ -24,13 +24,13 @@ Roberto::Roberto(ros::NodeHandle& nh)
     my_control_loop_ = nh_.createTimer(update_freq, &Roberto::update, this);
 }
 
-
 Roberto::~Roberto() {
 }
 
 void Roberto::initPositionPublishers() {
     bscrew_pos_pub = nh_.advertise<std_msgs::Float64>("bscrew_pos", 1);
     actuator_pos_pub = nh_.advertise<std_msgs::Float64>("actuator_pos", 1);
+    hit_limit_switch = nh_.advertise<std_msgs::Bool>("limit_switch", 1);
 }
 
 void Roberto::initRosControlJoints() {
@@ -144,24 +144,36 @@ void Roberto::update(const ros::TimerEvent& e) {
 void Roberto::read() {
 
 // BALL SCREW JOINT READS (FAKE)
-    bscrew_joint_position_ = 0;
-    bscrew_joint_velocity_ = 0;
+    bscrew_joint_position_ = ballScrewFalcon.GetSelectedSensorPosition();
+    bscrew_joint_velocity_ = ballScrewFalcon.GetSelectedSensorVelocity();
     bscrew_joint_effort_ = 0;
+    // bscrew pos topic
     std_msgs::Float64 bscrew_msg;
     bscrew_msg.data = auger_joint_position_;
     bscrew_pos_pub.publish(bscrew_msg);
+    // limit swtich topic
+    std_msgs::Bool limit_msg;
+    if (ballScrewFalcon.IsFwdLimitSwitchClosed())
+    {
+        limit_msg.data = 1;
+        ROS_INFO("n");
+    }
+    else
+        limit_msg.data = 0;
+    hit_limit_switch.publish(limit_msg);
 
 // LINEAR ACTUATOR JOINT READS (FAKE)
     actuator_joint_position_ = 0;
     actuator_joint_velocity_ = 0;
     actuator_joint_effort_ = 0;
+    // actuator pos toipc
     std_msgs::Float64 actuator_msg;
     actuator_msg.data = auger_joint_position_;
     actuator_pos_pub.publish(actuator_msg);
 
 // AUGER JOINT READS (FAKE)
     auger_joint_position_ = 0;
-    auger_joint_velocity_ = 0;
+    auger_joint_velocity_ = augerFalcon.GetSelectedSensorVelocity();
     auger_joint_effort_ = 0;
 
 // WHEEL JOINT READS
@@ -216,6 +228,18 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // AUGER WRITES
     augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
+
+    std_msgs::Bool omsg;
+    if(ballScrewFalcon.IsFwdLimitSwitchClosed())
+    {
+        ballScrewFalcon.SetSelectedSensorPosition(0);
+        omsg.data = 1;
+    }
+    else
+    {
+        omsg.data = 0;
+    }
+    hit_limit_switch.publish(omsg);
 }
 
 

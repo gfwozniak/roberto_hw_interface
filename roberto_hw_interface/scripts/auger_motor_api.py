@@ -2,6 +2,7 @@
 
 import rospy
 from std_msgs.msg import Float64
+from std_msgs.msg import Bool
 import time
 
 class AugerAPI:
@@ -18,9 +19,11 @@ class AugerAPI:
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
         self.actuator_position = 0.0
         self.bscrew_position = 0.0
+        self.limit_switch_position = 0
         self.is_moving = False
         rospy.Subscriber('actuator_pos', Float64, self._actuator_callback)
         rospy.Subscriber('bscrew_pos', Float64, self._bscrew_callback)
+        rospy.Subscriber('limit_switch', Bool, self._limit_switch_callback)
 
 #        # PARAMS
 #        self.actuator_range = rospy.get_param("~actuator_range")
@@ -41,6 +44,10 @@ class AugerAPI:
     def _bscrew_callback(self, value):
         self.bscrew_position = value.data
         print(self.bscrew_position)
+
+    def _limit_switch_callback(self, value):
+        self.limit_switch_position = value.data
+        print(self.limit_switch_position)
 
 #    def _actuator_callback(self, value):
 #        self.is_moving = value.data
@@ -92,8 +99,13 @@ class AugerAPI:
             self._actuator_publisher.publish(Float64(position))
             self._rate.sleep()
 
-    def runBScrewToLimit():
-        pass
+    def zeroBScrew(self):
+        while not rospy.is_shutdown():
+            if (self.limit_switch_position):
+                break
+            self._bscrew_publisher.publish(Float64(8000000))
+            self._rate.sleep()
+        self._bscrew_publisher.publish(Float64(0))
         
     def stopMotors(self):
         pass

@@ -8,6 +8,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Bool.h>
 
 // UPDATED PHOENIX INCLUDE
 #define Phoenix_No_WPI // remove WPI dependencies
@@ -79,4 +80,6 @@ class Roberto : public hardware_interface::RobotHW
 
         ros::Publisher bscrew_pos_pub;
         ros::Publisher actuator_pos_pub;
+        ros::Publisher hit_limit_switch;
+        void limitcallback(const std_msgs::Bool::ConstPtr& imsg);
 };
