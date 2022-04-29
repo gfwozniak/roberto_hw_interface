@@ -4,8 +4,8 @@ DriveSafety::Republisher::Republisher(ros::Publisher * publisher)
 : outputTwist(publisher)
 {
 	// Read parameter server
-	ros::param::get("~ballscrew_max", ballscrew_max);
-	ros::param::get("~ballscrew_min", ballscrew_min);
+	ros::param::get("~bscrew_max", bscrew_max);
+	ros::param::get("~bscrew_min", bscrew_min);
 	ros::param::get("~actuator_max", actuator_max);
 	ros::param::get("~actuator_min", actuator_min);
 	zeroOutput.linear.x = 0;
@@ -19,8 +19,8 @@ DriveSafety::Republisher::Republisher(ros::Publisher * publisher)
 // Conditions to activate drivetrain
 bool DriveSafety::Republisher::isDriveable()
 {
-	return (ballscrew_position < ballscrew_max &&
-		ballscrew_position > ballscrew_min &&
+	return (bscrew_position < bscrew_max &&
+		bscrew_position > bscrew_min &&
 		actuator_position < actuator_max &&
 		actuator_position > actuator_min);
 }
@@ -42,9 +42,9 @@ void DriveSafety::Republisher::callbackActuatorPosition(const std_msgs::Float64:
 }
 
 // Callback to read ballscrew position
-void DriveSafety::Republisher::callbackBallscrewPosition(const std_msgs::Float64::ConstPtr& imsg)
+void DriveSafety::Republisher::callbackBScrewPosition(const std_msgs::Float64::ConstPtr& imsg)
 {
-	ballscrew_position = imsg->data;
+	bscrew_position = imsg->data;
 }
 
 int main(int argc, char **argv)
@@ -60,8 +60,8 @@ int main(int argc, char **argv)
 
 	// Initialize subscribing on topic "input" to call with callback method in Repub instance
 	ros::Subscriber inputTwist = n.subscribe("input", 1000, &DriveSafety::Republisher::callback, &outputObj);
-	ros::Subscriber inputBScrewPosition = n.subscribe("ballscrew_position", 1000, &DriveSafety::Republisher::callbackBallscrewPosition, &outputObj);
-	ros::Subscriber inputActuatorPosition = n.subscribe("actuator_position", 1000, &DriveSafety::Republisher::callbackActuatorPosition, &outputObj);
+	ros::Subscriber inputBScrewPosition = n.subscribe("ballscrew_pos", 1000, &DriveSafety::Republisher::callbackBScrewPosition, &outputObj);
+	ros::Subscriber inputActuatorPosition = n.subscribe("actuator_pos", 1000, &DriveSafety::Republisher::callbackActuatorPosition, &outputObj);
 
 	// Spin (pump callbacks for subscribe function)
 	ros::spin();

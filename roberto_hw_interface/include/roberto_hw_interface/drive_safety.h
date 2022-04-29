@@ -10,9 +10,9 @@ namespace DriveSafety
         ros::Publisher * outputTwist;
         double actuator_max;
         double actuator_min;
-        double ballscrew_max;
-        double ballscrew_min;
-        double ballscrew_position = 0;
+        double bscrew_max;
+        double bscrew_min;
+        double bscrew_position = 0;
         double actuator_position = 0;
         geometry_msgs::Twist zeroOutput;
         bool isDriveable();
@@ -21,6 +21,6 @@ namespace DriveSafety
         Republisher(ros::Publisher * publisher);
         void callback(const geometry_msgs::Twist::ConstPtr& imsg);
         void callbackActuatorPosition(const std_msgs::Float64::ConstPtr& imsg);
-        void callbackBallscrewPosition(const std_msgs::Float64::ConstPtr& imsg);
+        void callbackBScrewPosition(const std_msgs::Float64::ConstPtr& imsg);
     };
 }

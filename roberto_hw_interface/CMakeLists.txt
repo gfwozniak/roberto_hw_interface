@@ -169,6 +169,7 @@ ${catkin_INCLUDE_DIRS}
  catkin_install_python(PROGRAMS
    scripts/runnertest.py
    scripts/fakeapi.py
+   scripts/auger_motor_api.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

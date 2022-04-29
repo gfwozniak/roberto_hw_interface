@@ -29,8 +29,8 @@ Roberto::~Roberto() {
 }
 
 void Roberto::initPositionPublishers() {
-    bscrew_pos_pub = nh_.advertise<std_msgs::Float64>("bscrew_pos_state", 1);
-    actuator_pos_pub = nh_.advertise<std_msgs::Float64>("actuator_pos_state", 1);
+    bscrew_pos_pub = nh_.advertise<std_msgs::Float64>("bscrew_pos", 1);
+    actuator_pos_pub = nh_.advertise<std_msgs::Float64>("actuator_pos", 1);
 }
 
 void Roberto::initRosControlJoints() {

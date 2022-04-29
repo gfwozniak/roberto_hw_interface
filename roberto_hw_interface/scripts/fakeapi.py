@@ -1,40 +1,31 @@
 #!/usr/bin/env python
 
 import rospy
-from std_msgs.msg import String
 from std_msgs.msg import Float64
-import time
 
-class SafeRobot:
+class AugerAPI:
 
+#
+# INITIALIZE OBJECT
+#
     def __init__(self):
-        self._pub2 = rospy.Publisher('tter', String, queue_size=10)
-        self._pub3 = rospy.Publisher('chatter', String, queue_size=10)
-        rospy.init_node('PythonSafetyLayer', anonymous=True)
+        # INITIALIZE PUBLISHERS
+        self._actuator_publisher = rospy.Publisher('actuator_cmd', Float64, queue_size=1)
+        self._bscrew_publisher = rospy.Publisher('bscrew_cmd', Float64, queue_size=1)
+        self._auger_publisher = rospy.Publisher('auger_cmd', Float64, queue_size=1)
+
+        # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
+        self.actuator_position = 0.0
+        self.bscrew_position = 0.0
+        self.is_moving = False
+
+        # PARAMS
+        self.actuator_range = rospy.get_param("~actuator_range")
+        self.bscrew_range = rospy.get_param("~bscrew_range")
+
+        #START HOSTING NODE
         self._rate = rospy.Rate(10) # 10hz
 
-    def publish2(self, seconds):
-        start_time = time.time()
-        while not rospy.is_shutdown():
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            if elapsed_time > seconds:
-                print("Finished iterating in: " + str(int(elapsed_time))  + " seconds")
-                break
-            hello_str = "hello world %s" % rospy.get_time()
-            rospy.loginfo(hello_str)
-            self._pub2.publish(hello_str)
-            self._rate.sleep()
+    def printparam(self):
+        print(self.actuator_range)
 
-    def publish3(self, seconds):
-        start_time = time.time()
-        while not rospy.is_shutdown():
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            if elapsed_time > seconds:
-                print("Finished iterating in: " + str(int(elapsed_time))  + " seconds")
-                break
-            hello_str = "hello world %s" % rospy.get_time()
-            rospy.loginfo(hello_str)
-            self._pub3.publish(hello_str)
-            self._rate.sleep()
