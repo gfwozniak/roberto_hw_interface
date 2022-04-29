@@ -170,6 +170,7 @@ ${catkin_INCLUDE_DIRS}
    scripts/runnertest.py
    scripts/fakeapi.py
    scripts/auger_motor_api.py
+   scripts/auger_functions.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
