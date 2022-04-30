@@ -136,8 +136,8 @@ void Roberto::initPhoenixObjects()
     bscrewMotionMagic.motionAcceleration = 100000;
     bscrewMotionMagic.motionCurveStrength = 1;
     bscrewMotionMagic.slot0.kP = 0.001;
-    bscrewMotionMagic.slot0.kI = 0.0002;
-    bscrewMotionMagic.slot0.maxIntegralAccumulator = 50000;
+//    bscrewMotionMagic.slot0.kI = 0.0002;
+//    bscrewMotionMagic.slot0.maxIntegralAccumulator = 50000;
 
     ballScrewFalcon.ConfigAllSettings(bscrewMotionMagic);
 
@@ -147,8 +147,8 @@ void Roberto::initPhoenixObjects()
     actuatorMotionMagic.motionAcceleration = 100;
     actuatorMotionMagic.motionCurveStrength = 1;
     actuatorMotionMagic.slot0.kP = 50;
-    actuatorMotionMagic.slot0.kI = 1;
-    actuatorMotionMagic.slot0.maxIntegralAccumulator = 20;
+//    actuatorMotionMagic.slot0.kI = 1;
+//    actuatorMotionMagic.slot0.maxIntegralAccumulator = 20;
 
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 }
@@ -241,6 +241,13 @@ void Roberto::write(ros::Duration elapsed_time) {
     leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1]);
 
     // ACTUATOR WRITES
+    double actuator_corrected;
+    if (actuator_joint_position_command_ < 940)
+        actuator_corrected = 940;
+    else if (actuator_joint_position_command_ > 1020)
+        actuator_corrected = 1020;
+    else
+        actuator_corrected = actuator_joint_position_command_;
     linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
     ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
 
