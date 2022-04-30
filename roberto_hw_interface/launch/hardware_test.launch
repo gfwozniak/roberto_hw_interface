@@ -3,7 +3,7 @@
   <rosparam file="$(find roberto_hw_interface)/config/controllers.yaml" command="load"/>
   <rosparam file="$(find roberto_hw_interface)/config/joint_limits.yaml" command="load"/>
 
-  <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw">
+  <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw" output="screen">
       <param name="drive_kP"    value="0.1"/>
       <param name="drive_kI"    value="0.002"/>
       <param name="drive_kD"    value="5.0"/>
