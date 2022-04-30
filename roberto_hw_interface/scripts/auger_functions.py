@@ -9,7 +9,7 @@ class AugerFunctions:
 
     def returnToNeutral(self):
         self.augerapi.setBScrewPosition(position=-5000)
-        self.augerapi.setActuatorPosition(position=1110)
+        self.augerapi.setActuatorPosition(position=1010)
 
     def deployAuger(self):
         if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
