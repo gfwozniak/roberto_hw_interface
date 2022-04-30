@@ -10,5 +10,6 @@ if __name__ == '__main__':
         print("zero bscrew")
         robot.zeroAuger()
         print("finished")
+        robot.deployAuger()
     except rospy.ROSInterruptException:
         pass
