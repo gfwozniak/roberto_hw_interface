@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="python_main_code" pkg="roberto_hw_interface" type="runnertest.py" output="screen">
+    <param name="actuator_range" value="1"/>
+    <param name="bscrew_range" value="1"/>
+    <remap from="/bscrew_cmd" to="/Roberto/bscrew_pos_controller/command"/>
+    <remap from="/actuator_cmd" to="/Roberto/actuator_pos_controller/command"/>
+    <remap from="/auger_cmd" to="/Roberto/auger_controller/command"/>
+    <!--<remap from="/bscrew_pos" to="/bscrew_pos_state"/>-->
+  </node>
+
+</launch>
