@@ -80,9 +80,6 @@ class AugerAPI:
                 break
             self._bscrew_publisher.publish(Float64(position))
             self._rate.sleep()
-            print((self.bscrew_position < (position + self._bscrew_error)) and (self.bscrew_position > (position - self._bscrew_error)))
-            print(self.bscrew_position)
-            print(position)
         
     def setBScrewPositionAndAugerVelocity(self, position, velocity):
         print("setting bscrew position with auger speed")
@@ -99,8 +96,6 @@ class AugerAPI:
         while not rospy.is_shutdown():
             if ((self.actuator_position < (position + self._actuator_error)) and (self.actuator_position > (position - self._actuator_error))):
                 break
-            print(position)
-            print(self.actuator_position)
             omsg = Float64()
             omsg.data = position
             self._actuator_publisher.publish(omsg)
@@ -109,7 +104,6 @@ class AugerAPI:
     def zeroBScrew(self):
         print("zeroing bscrew")
         while not rospy.is_shutdown():
-            print(self.limit_switch_position)
             if (self.limit_switch_position):
                 break
             self._bscrew_publisher.publish(Float64(8000000))
