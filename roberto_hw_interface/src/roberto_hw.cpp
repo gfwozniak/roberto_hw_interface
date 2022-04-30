@@ -135,8 +135,8 @@ void Roberto::initPhoenixObjects()
     bscrewMotionMagic.motionCruiseVelocity = 15000;
     bscrewMotionMagic.motionAcceleration = 100000;
     bscrewMotionMagic.motionCurveStrength = 1;
-    bscrewMotionMagic.slot0.kP = 0.01;
-    bscrewMotionMagic.slot0.kI = 0.002;
+    bscrewMotionMagic.slot0.kP = 0.001;
+    bscrewMotionMagic.slot0.kI = 0.0002;
     bscrewMotionMagic.slot0.maxIntegralAccumulator = 50000;
 
     ballScrewFalcon.ConfigAllSettings(bscrewMotionMagic);
