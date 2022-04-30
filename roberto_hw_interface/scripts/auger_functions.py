@@ -9,19 +9,19 @@ class AugerFunctions:
 
     def returnToNeutral(self):
         self.augerapi.setBScrewPosition(position=-5000)
-        self.augerapi.setActuatorPosition(position=-10)
+        self.augerapi.setActuatorPosition(position=1110)
 
     def deployAuger(self):
         if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
             pass
-        self.augerapi.setActuatorPosition(position=-86)
+        self.augerapi.setActuatorPosition(position=940)
         self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=1)
         self.returnToNeutral()
 
     def depositAuger(self):
         if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
             pass
-        self.augerapi.setActuatorPosition(position=-3)
+        self.augerapi.setActuatorPosition(position=1000)
         self.augerapi.setBScrewPosition(position=-2000000)
         self.augerapi.setAugerVelocityForDuration(velocity=-1, seconds=6)
         self.returnToNeutral()
