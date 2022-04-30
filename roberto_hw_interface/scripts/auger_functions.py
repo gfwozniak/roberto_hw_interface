@@ -26,6 +26,9 @@ class AugerFunctions:
         self.augerapi.setAugerVelocityForDuration(velocity=-1, seconds=6)
         self.returnToNeutral()
 
+    def zeroAuger(self):
+        self.augerapi.zeroBScrew()
+        self.returnToNeutral()
 
 
 

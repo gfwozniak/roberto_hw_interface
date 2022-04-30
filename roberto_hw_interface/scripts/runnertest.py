@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 import rospy
-from auger_motor_api import AugerAPI
+from auger_functions import AugerFunctions
 
 if __name__ == '__main__':
     try:
         rospy.init_node('auger_motor_calls', anonymous=True)
-        robot = AugerAPI()
+        robot = AugerFunctions()
         print("zero bscrew")
-        robot.zeroBScrew()
+        robot.zeroAuger()
         print("finished")
     except rospy.ROSInterruptException:
         pass
