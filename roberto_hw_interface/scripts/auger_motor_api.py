@@ -98,7 +98,10 @@ class AugerAPI:
             if ((self.actuator_position < (position + self._actuator_error)) and (self.actuator_position > (position - self._actuator_error))):
                 break
             print(position)
-            self._actuator_publisher.publish(Float64(position))
+            print(self.actuator_position)
+            omsg = Float64()
+            omsg.data = position
+            self._actuator_publisher.publish(omsg)
             self._rate.sleep()
 
     def zeroBScrew(self):
