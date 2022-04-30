@@ -23,7 +23,7 @@
 class Roberto : public hardware_interface::RobotHW 
 {
     public:
-        Roberto(ros::NodeHandle& nh);
+        Roberto(ros::NodeHandle& nh, ros::Publisher * bscrewpub, ros::Publisher * actuatorpub, ros::Publisher * limitpub);
         ~Roberto();
         void initRosControlJoints(); // Initializes all ros_control joints
         void initPhoenixObjects(); // Configures all falcon motors
@@ -78,8 +78,8 @@ class Roberto : public hardware_interface::RobotHW
         double loop_hz_;
         boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
 
-        ros::Publisher bscrew_pos_pub;
-        ros::Publisher actuator_pos_pub;
-        ros::Publisher hit_limit_switch;
+        ros::Publisher * bscrew_pos_pub;
+        ros::Publisher * actuator_pos_pub;
+        ros::Publisher * hit_limit_switch;
         void limitcallback(const std_msgs::Bool::ConstPtr& imsg);
 };

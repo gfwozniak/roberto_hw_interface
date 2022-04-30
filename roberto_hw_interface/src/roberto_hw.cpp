@@ -1,12 +1,15 @@
 #include <roberto_hw_interface/roberto_hw.h>
 
-Roberto::Roberto(ros::NodeHandle& nh) 
+Roberto::Roberto(ros::NodeHandle& nh, ros::Publisher * bscrewpub, ros::Publisher * actuatorpub, ros::Publisher * limitpub) 
     : nh_(nh),
     rightDriveFalcon(21), // initialize falcons
     leftDriveFalcon(22),
     linearActuatorTalon(31),
     ballScrewFalcon(32),
-    augerFalcon(41)
+    augerFalcon(41),
+    bscrew_pos_pub(bscrewpub),
+    actuator_pos_pub(actuatorpub),
+    hit_limit_switch(limitpub)
 {
 
     initRosControlJoints();
@@ -28,9 +31,6 @@ Roberto::~Roberto() {
 }
 
 void Roberto::initPositionPublishers() {
-    bscrew_pos_pub = nh_.advertise<std_msgs::Float64>("bscrew_pos", 1);
-    actuator_pos_pub = nh_.advertise<std_msgs::Float64>("actuator_pos", 1);
-    hit_limit_switch = nh_.advertise<std_msgs::Bool>("limit_switch", 1);
 }
 
 void Roberto::initRosControlJoints() {
@@ -172,7 +172,7 @@ void Roberto::read() {
     // bscrew pos topic
     std_msgs::Float64 bscrew_msg;
     bscrew_msg.data = auger_joint_position_;
-    bscrew_pos_pub.publish(bscrew_msg);
+    bscrew_pos_pub->publish(bscrew_msg);
     // limit swtich topic
     std_msgs::Bool limit_msg;
     if (ballScrewFalcon.IsFwdLimitSwitchClosed())
@@ -182,7 +182,7 @@ void Roberto::read() {
     }
     else
         limit_msg.data = 0;
-    hit_limit_switch.publish(limit_msg);
+    hit_limit_switch->publish(limit_msg);
 
 // LINEAR ACTUATOR JOINT READS (FAKE)
     actuator_joint_position_ = 0;
@@ -191,7 +191,7 @@ void Roberto::read() {
     // actuator pos toipc
     std_msgs::Float64 actuator_msg;
     actuator_msg.data = auger_joint_position_;
-    actuator_pos_pub.publish(actuator_msg);
+    actuator_pos_pub->publish(actuator_msg);
 
 // AUGER JOINT READS (FAKE)
     auger_joint_position_ = 0;
@@ -257,18 +257,6 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // AUGER WRITES
     augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
-
-    std_msgs::Bool omsg;
-    if(ballScrewFalcon.IsFwdLimitSwitchClosed())
-    {
-        ballScrewFalcon.SetSelectedSensorPosition(0);
-        omsg.data = 1;
-    }
-    else
-    {
-        omsg.data = 0;
-    }
-    hit_limit_switch.publish(omsg);
 }
 
 
@@ -278,12 +266,15 @@ int main(int argc, char** argv)
     //Initialze the ROS node.
     ros::init(argc, argv, "Roberto_hardware_inerface_node");
     ros::NodeHandle nh;
+    auto bscrew_pos_pub = nh.advertise<std_msgs::Float64>("bscrew_pos", 100);
+    auto actuator_pos_pub = nh.advertise<std_msgs::Float64>("actuator_pos", 100);
+    auto hit_limit_switch = nh.advertise<std_msgs::Bool>("limit_switch", 100);
     
     //Separate Spinner thread for the Non-Real time callbacks such as service callbacks to load controllers
     ros::MultiThreadedSpinner spinner(2);
     
     // Create the object of the robot hardware_interface class and spin the thread. 
-    Roberto ROBOT(nh);
+    Roberto ROBOT(nh, &bscrew_pos_pub, &actuator_pos_pub, &hit_limit_switch);
     spinner.spin();
     
     return 0;
