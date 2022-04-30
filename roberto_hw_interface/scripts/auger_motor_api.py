@@ -97,6 +97,7 @@ class AugerAPI:
         while not rospy.is_shutdown():
             if ((self.actuator_position < (position + self._actuator_error)) and (self.actuator_position > (position - self._actuator_error))):
                 break
+            print(position)
             self._actuator_publisher.publish(Float64(position))
             self._rate.sleep()
 
