@@ -172,7 +172,7 @@ void Roberto::read() {
     bscrew_joint_effort_ = 0;
     // bscrew pos topic
     std_msgs::Float64 bscrew_msg;
-    bscrew_msg.data = bscrew_joint_position_;
+    bscrew_msg.data = ballScrewFalcon.GetSelectedSensorPosition();
     bscrew_pos_pub->publish(bscrew_msg);
     // limit swtich topic
     std_msgs::Bool limit_msg;
@@ -190,7 +190,7 @@ void Roberto::read() {
     actuator_joint_effort_ = 0;
     // actuator pos toipc
     std_msgs::Float64 actuator_msg;
-    actuator_msg.data = auger_joint_position_;
+    actuator_msg.data = linearActuatorTalon.GetSelectedSensorPosition();
     actuator_pos_pub->publish(actuator_msg);
 
 // AUGER JOINT READS (FAKE)
