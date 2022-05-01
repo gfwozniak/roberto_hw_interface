@@ -32,7 +32,7 @@ class AugerAPI:
         # OTHER VARIABLES
         self._rate = rospy.Rate(10) # 10hz
         self._actuator_error = 2.0;
-        self._bscrew_error = 10000.0;
+        self._bscrew_error = 100000.0;
 
 #
 # CALLBACK METHODS for SUBSCRIBERS
