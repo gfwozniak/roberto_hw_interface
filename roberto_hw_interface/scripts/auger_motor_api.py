@@ -39,15 +39,12 @@ class AugerAPI:
 #
     def _actuator_callback(self, value):
         self.actuator_position = value.data
-        print(value)
 
     def _bscrew_callback(self, value):
         self.bscrew_position = value.data
-        print(value)
 
     def _limit_switch_callback(self, value):
         self.limit_switch_position = value.data
-        print(value)
 
 #    def _actuator_callback(self, value):
 #        self.is_moving = value.data
