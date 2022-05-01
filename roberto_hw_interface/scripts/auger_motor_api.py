@@ -43,6 +43,7 @@ class AugerAPI:
 
     def _bscrew_callback(self, value):
         self.bscrew_position = value.data
+        print(value)
 
     def _limit_switch_callback(self, value):
         self.limit_switch_position = value.data
@@ -85,6 +86,7 @@ class AugerAPI:
         print("setting bscrew position with auger speed")
         while not rospy.is_shutdown():
             if ((self.bscrew_position < (position + self._bscrew_error)) and (self.bscrew_position > (position - self._bscrew_error))):
+                print("good")
                 break
             self._bscrew_publisher.publish(Float64(position))
             self._auger_publisher.publish(Float64(velocity))
