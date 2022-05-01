@@ -7,9 +7,7 @@ if __name__ == '__main__':
     try:
         rospy.init_node('auger_motor_calls', anonymous=True)
         robot = AugerFunctions()
-        print("zero bscrew")
-        robot.zeroAuger()
         print("finished")
-        robot.deployAuger()
+        robot.depositAuger()
     except rospy.ROSInterruptException:
         pass
