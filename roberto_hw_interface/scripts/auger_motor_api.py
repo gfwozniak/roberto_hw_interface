@@ -93,9 +93,14 @@ class AugerAPI:
             self._rate.sleep()
         self._auger_publisher.publish(Float64(0))
 
-    def setActuatorPosition(self, position):
+    def setActuatorPositionTimeout(self, position, seconds):
         print("setting actuator position")
+        start_time = time.time()
         while not rospy.is_shutdown():
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+            if elapsed_time > seconds:
+                break
             if ((self.actuator_position < (position + self._actuator_error)) and (self.actuator_position > (position - self._actuator_error))):
                 break
             omsg = Float64()
