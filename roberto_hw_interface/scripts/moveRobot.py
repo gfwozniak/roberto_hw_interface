@@ -2,9 +2,8 @@
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
-#import os #from initialize controller script
 from auger_functions import AugerFunctions
-#from initializeController import initializeController
+from initializeController import initializeController
 #import runnertest.py need to be in same dir?
 # Author: Andrew Dai, gotten from the https://andrewdai.co/xbox-controller-ros.html#rosjoy
 # This ROS Node converts Joystick inputs from the joy node
@@ -56,5 +55,5 @@ def start():
     
 if __name__ == '__main__':
         #start the initialize controller script
-#        initializeController()
-        start()
+       initializeController()
+       start()
