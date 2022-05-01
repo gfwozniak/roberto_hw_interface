@@ -21,9 +21,10 @@ class AugerFunctions:
     def depositAuger(self):
         if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
             pass
-        self.augerapi.setActuatorPosition(position=1000)
+        self.augerapi.setActuatorPosition(position=1040)
         self.augerapi.setBScrewPosition(position=-2000000)
         self.augerapi.setAugerVelocityForDuration(velocity=-1, seconds=6)
+        self.augerapi.setAugerVelocityForDuration(velocity=0, seconds=1)
         self.returnToNeutral()
 
     def zeroAuger(self):
