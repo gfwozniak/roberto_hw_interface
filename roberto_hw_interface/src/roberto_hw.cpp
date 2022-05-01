@@ -165,28 +165,28 @@ void Roberto::update(const ros::TimerEvent& e) {
 
 void Roberto::read() {
 
+    ROS_INFO("n");
 // BALL SCREW JOINT READS (FAKE)
     bscrew_joint_position_ = ballScrewFalcon.GetSelectedSensorPosition();
     bscrew_joint_velocity_ = ballScrewFalcon.GetSelectedSensorVelocity();
     bscrew_joint_effort_ = 0;
     // bscrew pos topic
     std_msgs::Float64 bscrew_msg;
-    bscrew_msg.data = auger_joint_position_;
+    bscrew_msg.data = bscrew_joint_position_;
     bscrew_pos_pub->publish(bscrew_msg);
     // limit swtich topic
     std_msgs::Bool limit_msg;
     if (ballScrewFalcon.IsFwdLimitSwitchClosed())
     {
         limit_msg.data = 1;
-        ROS_INFO("n");
     }
     else
         limit_msg.data = 0;
     hit_limit_switch->publish(limit_msg);
 
 // LINEAR ACTUATOR JOINT READS (FAKE)
-    actuator_joint_position_ = 0;
-    actuator_joint_velocity_ = 0;
+    actuator_joint_position_ = linearActuatorTalon.GetSelectedSensorPosition();
+    actuator_joint_velocity_ = linearActuatorTalon.GetSelectedSensorVelocity();
     actuator_joint_effort_ = 0;
     // actuator pos toipc
     std_msgs::Float64 actuator_msg;
