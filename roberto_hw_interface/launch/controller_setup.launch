@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="joystickpython" pkg="roberto_hw_interface" type="moveRobot.py" output="screen">
+    <remap from="/bscrew_cmd" to="/Roberto/bscrew_pos_controller/command"/>
+    <remap from="/actuator_cmd" to="/Roberto/actuator_pos_controller/command"/>
+    <remap from="/auger_cmd" to="/Roberto/auger_controller/command"/>
+    <remap from="/drivetrain_cmd" to="/Drivetrain/cmd_vel"/>
+    <!--<remap from="/bscrew_pos" to="/bscrew_pos_state"/>-->
+  </node>
+</launch>
