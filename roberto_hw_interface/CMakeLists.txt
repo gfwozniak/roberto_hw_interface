@@ -233,6 +233,13 @@ target_link_libraries(roberto_hw
   Threads::Threads
 )
 
+add_executable(roberto_limit_handler src/roberto_limit_handler.cpp)
+target_link_libraries(roberto_limit_handler 
+  CTRE_Phoenix
+  ${catkin_LIBRARIES}
+  Threads::Threads
+)
+
 add_executable(falcon_test src/falcon_test.cpp)
 target_link_libraries(falcon_test
   CTRE_Phoenix
@@ -248,6 +255,3 @@ target_link_libraries(diff_drive ${catkin_LIBRARIES})
 
 add_executable(drive_safety src/drive_safety.cpp)
 target_link_libraries(drive_safety ${catkin_LIBRARIES})
-
-add_executable(roberto_limit_handler src/roberto_limit_handler.cpp)
-target_link_libraries(roberto_limit_handler ${catkin_LIBRARIES})

@@ -1,8 +1,7 @@
 #include <roberto_hw_interface/roberto_limit_handler.h>
 
 RobertoLimits::RobertoLimits(ros::Publisher * actuator_pub, ros::Publisher * bscrew_pub) 
-    :    
-    linearActuatorTalon(31),
+    : linearActuatorTalon(31),
     ballScrewFalcon(32),
     bscrew_limit_pub(bscrew_pub),
     actuator_limit_pub(actuator_pub)
