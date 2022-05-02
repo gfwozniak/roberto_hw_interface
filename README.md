@@ -16,3 +16,5 @@ Go find the canableStart.sh bash script and run it with the CANable device plugg
 
 then to run the launch file:
 ```roslaunch roberto_hw_interface hw_interface.launch```
+
+note: services don't work over the network unless you update /etc/hosts with the name of the computer hosting the service -_-
