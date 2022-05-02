@@ -261,9 +261,6 @@ int main(int argc, char** argv)
     // Create the object of the robot hardware_interface class and spin the thread. 
     Roberto ROBOT(nh, &bscrew_pos_pub, &actuator_pos_pub, &hit_limit_switch);
 
-    ros::ServiceServer zeroBScrewService = nh.advertiseService("zero_bscrew", &Roberto::zeroBScrew, &ROBOT);
-    ros::ServiceServer zeroActuatorService = nh.advertiseService("zero_actuator", &Roberto::zeroActuator, &ROBOT);
-
     spinner.spin();
     
     return 0;
