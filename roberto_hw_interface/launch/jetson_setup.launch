@@ -4,7 +4,7 @@
   <rosparam file="$(find roberto_hw_interface)/config/joint_limits.yaml" command="load"/>
 
   <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw" output="screen">
-      <param name="wheel_multiplier"    value="1000"/>
+      <param name="wheel_multiplier"    value="1300"/>
   </node>
   
   <node name="RobertoLimits" pkg="roberto_hw_interface" type="roberto_limit_handler"/>

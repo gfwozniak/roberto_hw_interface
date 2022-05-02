@@ -144,8 +144,9 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[0] * wheelMultiplier);
-    leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1] * wheelMultiplier);
+    rightDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[0] * wheelMultiplier);
+    leftDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[1] * wheelMultiplier);
+    ROS_INFO("Value: %.2f", wheel_joint_velocity_command_[0]);
 //
 //    // ACTUATOR WRITES
 //    double actuator_corrected;
