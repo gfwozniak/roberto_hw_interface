@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from auger_motor_api import AugerAPI
+from roberto_hw_interface.scripts.robot_api import RobertoAPI
 
 class AugerFunctions:
 
     def __init__(self):
-        self.augerapi = AugerAPI()
+        self.augerapi = RobertoAPI()
         self.isRunning = False
 
     def returnToNeutral(self):

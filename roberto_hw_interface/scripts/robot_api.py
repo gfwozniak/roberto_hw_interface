@@ -3,6 +3,7 @@
 import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import Bool
+from sensor_msgs.msg import JointState
 import time
 
 class RobertoAPI:
@@ -15,14 +16,17 @@ class RobertoAPI:
         self._actuator_publisher = rospy.Publisher('actuator_cmd', Float64, queue_size=1)
         self._bscrew_publisher = rospy.Publisher('bscrew_cmd', Float64, queue_size=1)
         self._auger_publisher = rospy.Publisher('auger_cmd', Float64, queue_size=1)
+        self._drivetrain_publisher = rospy.Publisher('drivetrain_cmd', Float64, queue_size=1)
+
+        # INITIALIZE COMMAND VARIABLES
+        self.drivetrain_linear_x_cmd_ = 0.0
+        self.drivetrain_angular_z_cmd_ = 0.0
+        self.actuator_position_cmd_ = 1000.0
+        self.bscrew_position_cmd_ = 0.0
+        self.auger_run_cmd_ = 0.0
 
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
-        self.actuator_position = 0.0
-        self.bscrew_position = 0.0
-        self.limit_switch_position = 0
-        self.is_moving = False
-        rospy.Subscriber('actuator_pos', Float64, self._actuator_callback)
-        rospy.Subscriber('bscrew_pos', Float64, self._bscrew_callback)
+        rospy.Subscriber('joint_states', JointState, self._joint_state_callback)
         rospy.Subscriber('limit_switch', Bool, self._limit_switch_callback)
 
 #        # PARAMS

@@ -14,7 +14,6 @@ Roberto::Roberto(ros::NodeHandle& nh, ros::Publisher * bscrewpub, ros::Publisher
 
     initRosControlJoints();
     initPhoenixObjects();
-    initPositionPublishers();
     
 // Create the controller manager
     controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
@@ -28,9 +27,6 @@ Roberto::Roberto(ros::NodeHandle& nh, ros::Publisher * bscrewpub, ros::Publisher
 }
 
 Roberto::~Roberto() {
-}
-
-void Roberto::initPositionPublishers() {
 }
 
 void Roberto::initRosControlJoints() {
@@ -212,29 +208,40 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[0]);
-    leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1]);
-    ROS_INFO("Value: %.2f", wheel_joint_velocity_command_[0]);
-
-    // ACTUATOR WRITES
-    double actuator_corrected;
-    if (actuator_joint_position_command_ < 940)
-        actuator_corrected = 940;
-    else if (actuator_joint_position_command_ > 1020)
-        actuator_corrected = 1020;
-    else
-        actuator_corrected = actuator_joint_position_command_;
-    linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
-    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
-
-    // BSCREW WRITES
-    ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
-    ROS_INFO("%%Out Cmd: %.2f",bscrew_joint_position_command_);
-
-    // AUGER WRITES
-    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
+//    rightDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[0]);
+//    leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1]);
+//    ROS_INFO("Value: %.2f", wheel_joint_velocity_command_[0]);
+//
+//    // ACTUATOR WRITES
+//    double actuator_corrected;
+//    if (actuator_joint_position_command_ < 940)
+//        actuator_corrected = 940;
+//    else if (actuator_joint_position_command_ > 1020)
+//        actuator_corrected = 1020;
+//    else
+//        actuator_corrected = actuator_joint_position_command_;
+//    linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
+//    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
+//
+//    // BSCREW WRITES
+//    ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
+//    ROS_INFO("%%Out Cmd: %.2f",bscrew_joint_position_command_);
+//
+//    // AUGER WRITES
+//    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
 }
 
+bool Roberto::zeroBScrew(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
+{
+    ballScrewFalcon.SetSelectedSensorPosition(0);
+    return true;
+}
+
+bool Roberto::zeroActuator(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
+{
+    linearActuatorTalon.SetSelectedSensorPosition(0);
+    return true;
+}
 
 int main(int argc, char** argv)
 {
@@ -242,6 +249,8 @@ int main(int argc, char** argv)
     //Initialze the ROS node.
     ros::init(argc, argv, "Roberto_hardware_inerface_node");
     ros::NodeHandle nh;
+
+
     auto bscrew_pos_pub = nh.advertise<std_msgs::Float64>("bscrew_pos", 100);
     auto actuator_pos_pub = nh.advertise<std_msgs::Float64>("actuator_pos", 100);
     auto hit_limit_switch = nh.advertise<std_msgs::Bool>("limit_switch", 100);
@@ -251,6 +260,10 @@ int main(int argc, char** argv)
     
     // Create the object of the robot hardware_interface class and spin the thread. 
     Roberto ROBOT(nh, &bscrew_pos_pub, &actuator_pos_pub, &hit_limit_switch);
+
+    ros::ServiceServer zeroBScrewService = nh.advertiseService("zero_bscrew", &Roberto::zeroBScrew, &ROBOT);
+    ros::ServiceServer zeroActuatorService = nh.advertiseService("zero_actuator", &Roberto::zeroActuator, &ROBOT);
+
     spinner.spin();
     
     return 0;

@@ -9,6 +9,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Bool.h>
+#include <std_srvs/Empty.h>
 
 // UPDATED PHOENIX INCLUDE
 #define Phoenix_No_WPI // remove WPI dependencies
@@ -27,10 +28,11 @@ class Roberto : public hardware_interface::RobotHW
         ~Roberto();
         void initRosControlJoints(); // Initializes all ros_control joints
         void initPhoenixObjects(); // Configures all falcon motors
-        void initPositionPublishers(); // Advertises position states
         void update(const ros::TimerEvent& e);
         void read();
         void write(ros::Duration elapsed_time);
+        bool zeroBScrew(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
+        bool zeroActuator(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
         
     protected:
         hardware_interface::JointStateInterface joint_state_interface_;
@@ -82,4 +84,5 @@ class Roberto : public hardware_interface::RobotHW
         ros::Publisher * actuator_pos_pub;
         ros::Publisher * hit_limit_switch;
         void limitcallback(const std_msgs::Bool::ConstPtr& imsg);
+
 };
