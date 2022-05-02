@@ -1,15 +1,12 @@
 #include <roberto_hw_interface/roberto_hw.h>
 
-Roberto::Roberto(ros::NodeHandle& nh, ros::Publisher * bscrewpub, ros::Publisher * actuatorpub, ros::Publisher * limitpub) 
+Roberto::Roberto(ros::NodeHandle& nh) 
     : nh_(nh),
     rightDriveFalcon(21), // initialize falcons
     leftDriveFalcon(22),
     linearActuatorTalon(31),
     ballScrewFalcon(32),
-    augerFalcon(41),
-    bscrew_pos_pub(bscrewpub),
-    actuator_pos_pub(actuatorpub),
-    hit_limit_switch(limitpub)
+    augerFalcon(41)
 {
 
     initRosControlJoints();
@@ -72,14 +69,12 @@ void Roberto::initRosControlJoints() {
 void Roberto::initPhoenixObjects() 
 {
     TalonFXConfiguration wheelConfig;
-
-    ros::param::get("~drive_kP", wheelConfig.slot0.kP);
-    ros::param::get("~drive_kI", wheelConfig.slot0.kI);
-    ros::param::get("~drive_kD", wheelConfig.slot0.kD);
-    ros::param::get("~drive_kF", wheelConfig.slot0.kF);
-    ros::param::get("~drive_ramp", wheelConfig.closedloopRamp);
+    wheelConfig.slot0.kP = 0.1;
+    wheelConfig.slot0.kI = 0.002;
+    wheelConfig.slot0.kD = 5.0;
+    wheelConfig.slot0.kF = 0.035;
+    wheelConfig.closedloopRamp = 1;
 	wheelConfig.slot0.maxIntegralAccumulator = 16000;
-
 	rightDriveFalcon.ConfigAllSettings(wheelConfig);
 	leftDriveFalcon.ConfigAllSettings(wheelConfig);
 
@@ -92,7 +87,6 @@ void Roberto::initPhoenixObjects()
     bscrewMotionMagic.clearPositionOnLimitF = true;
 //    bscrewMotionMagic.slot0.kI = 0.0002;
 //    bscrewMotionMagic.slot0.maxIntegralAccumulator = 50000;
-
     ballScrewFalcon.ConfigAllSettings(bscrewMotionMagic);
 
     TalonSRXConfiguration actuatorMotionMagic;
@@ -103,7 +97,6 @@ void Roberto::initPhoenixObjects()
     actuatorMotionMagic.slot0.kP = 50;
 //    actuatorMotionMagic.slot0.kI = 1;
 //    actuatorMotionMagic.slot0.maxIntegralAccumulator = 20;
-
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 }
 
@@ -131,28 +124,11 @@ void Roberto::read() {
     bscrew_joint_position_ = ballScrewFalcon.GetSelectedSensorPosition();
     bscrew_joint_velocity_ = ballScrewFalcon.GetSelectedSensorVelocity();
     bscrew_joint_effort_ = 0;
-    // bscrew pos topic
-    std_msgs::Float64 bscrew_msg;
-    bscrew_msg.data = ballScrewFalcon.GetSelectedSensorPosition();
-    bscrew_pos_pub->publish(bscrew_msg);
-    // limit swtich topic
-    std_msgs::Bool limit_msg;
-    if (ballScrewFalcon.IsFwdLimitSwitchClosed())
-    {
-        limit_msg.data = 1;
-    }
-    else
-        limit_msg.data = 0;
-    hit_limit_switch->publish(limit_msg);
 
     // ACTUATOR READS
     actuator_joint_position_ = linearActuatorTalon.GetSelectedSensorPosition();
     actuator_joint_velocity_ = linearActuatorTalon.GetSelectedSensorVelocity();
     actuator_joint_effort_ = 0;
-    // actuator pos toipc
-    std_msgs::Float64 actuator_msg;
-    actuator_msg.data = linearActuatorTalon.GetSelectedSensorPosition();
-    actuator_pos_pub->publish(actuator_msg);
 
     // AUGER READS
     auger_joint_position_ = 0;
@@ -189,18 +165,6 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
 }
 
-bool Roberto::zeroBScrew(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
-{
-    ballScrewFalcon.SetSelectedSensorPosition(0);
-    return true;
-}
-
-bool Roberto::zeroActuator(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
-{
-    linearActuatorTalon.SetSelectedSensorPosition(0);
-    return true;
-}
-
 int main(int argc, char** argv)
 {
 
@@ -208,16 +172,11 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "Roberto_hardware_inerface_node");
     ros::NodeHandle nh;
 
-
-    auto bscrew_pos_pub = nh.advertise<std_msgs::Float64>("bscrew_pos", 100);
-    auto actuator_pos_pub = nh.advertise<std_msgs::Float64>("actuator_pos", 100);
-    auto hit_limit_switch = nh.advertise<std_msgs::Bool>("limit_switch", 100);
-    
     //Separate Spinner thread for the Non-Real time callbacks such as service callbacks to load controllers
     ros::MultiThreadedSpinner spinner(2);
     
     // Create the object of the robot hardware_interface class and spin the thread. 
-    Roberto ROBOT(nh, &bscrew_pos_pub, &actuator_pos_pub, &hit_limit_switch);
+    Roberto ROBOT(nh);
 
     spinner.spin();
     

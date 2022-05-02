@@ -24,15 +24,13 @@
 class Roberto : public hardware_interface::RobotHW 
 {
     public:
-        Roberto(ros::NodeHandle& nh, ros::Publisher * bscrewpub, ros::Publisher * actuatorpub, ros::Publisher * limitpub);
+        Roberto(ros::NodeHandle& nh);
         ~Roberto();
         void initRosControlJoints(); // Initializes all ros_control joints
         void initPhoenixObjects(); // Configures all falcon motors
         void update(const ros::TimerEvent& e);
         void read();
         void write(ros::Duration elapsed_time);
-        bool zeroBScrew(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
-        bool zeroActuator(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
         
     protected:
         hardware_interface::JointStateInterface joint_state_interface_;
@@ -79,10 +77,4 @@ class Roberto : public hardware_interface::RobotHW
         ros::Duration elapsed_time_;
         double loop_hz_;
         boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
-
-        ros::Publisher * bscrew_pos_pub;
-        ros::Publisher * actuator_pos_pub;
-        ros::Publisher * hit_limit_switch;
-        void limitcallback(const std_msgs::Bool::ConstPtr& imsg);
-
 };
