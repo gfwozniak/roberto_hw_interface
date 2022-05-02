@@ -5,7 +5,7 @@ from std_msgs.msg import Float64
 from std_msgs.msg import Bool
 import time
 
-class AugerAPI:
+class RobertoAPI:
 
 #
 # INITIALIZE OBJECT
