@@ -76,6 +76,7 @@ void Roberto::initPhoenixObjects()
     wheelConfig.closedloopRamp = 1;
 	wheelConfig.slot0.maxIntegralAccumulator = 16000;
 	rightDriveFalcon.ConfigAllSettings(wheelConfig);
+    rightDriveFalcon.SetInverted(true);
 	leftDriveFalcon.ConfigAllSettings(wheelConfig);
 
     TalonFXConfiguration bscrewMotionMagic;
@@ -115,12 +116,12 @@ void Roberto::update(const ros::TimerEvent& e) {
 void Roberto::read() {
 
     // WHEEL READS
-    wheel_joint_position_[0] = rightDriveFalcon.GetSelectedSensorPosition();
-    wheel_joint_velocity_[0] = rightDriveFalcon.GetSelectedSensorVelocity();
-    wheel_joint_effort_[0] = rightDriveFalcon.GetSupplyCurrent();
-    wheel_joint_position_[1] = leftDriveFalcon.GetSelectedSensorPosition();
-    wheel_joint_velocity_[1] = leftDriveFalcon.GetSelectedSensorVelocity();
-    wheel_joint_effort_[1] = leftDriveFalcon.GetSupplyCurrent();
+    wheel_joint_position_[1] = rightDriveFalcon.GetSelectedSensorPosition();
+    wheel_joint_velocity_[1] = rightDriveFalcon.GetSelectedSensorVelocity();
+    wheel_joint_effort_[1] = rightDriveFalcon.GetSupplyCurrent();
+    wheel_joint_position_[0] = leftDriveFalcon.GetSelectedSensorPosition();
+    wheel_joint_velocity_[0] = leftDriveFalcon.GetSelectedSensorVelocity();
+    wheel_joint_effort_[0] = leftDriveFalcon.GetSupplyCurrent();
 
     // BSCREW READS
     bscrew_joint_position_ = ballScrewFalcon.GetSelectedSensorPosition();
@@ -144,8 +145,8 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::Velocity, (-wheel_joint_velocity_command_[0] * wheelMultiplier));
-    leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
+    rightDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
+    leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));
     ROS_INFO("Value: %.2f", (wheel_joint_velocity_command_[0]* wheelMultiplier));
 //
 //    // ACTUATOR WRITES
