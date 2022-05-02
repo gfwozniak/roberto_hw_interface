@@ -22,19 +22,18 @@ bool RobertoLimits::zeroActuator(std_srvs::Empty::Request& request, std_srvs::Em
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "Roberto_hardware_inerface_node");
+    ros::init(argc, argv, "roberto_limits");
     ros::NodeHandle nh;
-    ros::MultiThreadedSpinner spinner(2);
 
     auto bscrew_limit_pub = nh.advertise<std_msgs::Bool>("bscrew_limit", 100);
     auto actuator_limit_pub = nh.advertise<std_msgs::Bool>("actuator_limit", 100);
-    
     RobertoLimits ROBOT(&bscrew_limit_pub, &actuator_limit_pub);
 
     ros::ServiceServer zeroBScrewService = nh.advertiseService("zero_bscrew", &RobertoLimits::zeroBScrew, &ROBOT);
     ros::ServiceServer zeroActuatorService = nh.advertiseService("zero_actuator", &RobertoLimits::zeroActuator, &ROBOT);
+    ROS_INFO("Ready to zero bscrew\n");
 
-    spinner.spin();
+    ros::spin();
     
     return 0;
 }
