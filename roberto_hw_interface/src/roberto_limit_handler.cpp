@@ -25,6 +25,14 @@ void enableFeed(const sensor_msgs::JointState::ConstPtr& imsg)
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
 }
 
+void RobertoLimits::readLimit(const ros::TimerEvent& timer)
+{
+    bool isLimit = ballScrewFalcon.IsFwdLimitSwitchClosed();
+    std_msgs::Bool omsg;
+    omsg.data = isLimit;
+    bscrew_limit_pub->publish(omsg);
+}
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "roberto_limits");
@@ -39,6 +47,8 @@ int main(int argc, char** argv)
     ROS_INFO("Ready to zero bscrew\n");
 
     ros::Subscriber feed = nh.subscribe("joint_states", 1000, &RobertoLimits::enableFeed, &ROBOT);
+
+    ros::Timer timer = nh.createTimer(ros::Duration(0.1), &RobertoLimits::readLimit, &ROBOT);
 
     ros::spin();
     

@@ -21,6 +21,7 @@ class RobertoLimits
         bool zeroBScrew(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
         bool zeroActuator(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
         void enableFeed(const sensor_msgs::JointState::ConstPtr& imsg);
+        void readLimit(const ros::TimerEvent& timer);
         
     protected:
         ctre::phoenix::motorcontrol::can::TalonSRX linearActuatorTalon;

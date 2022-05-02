@@ -32,56 +32,20 @@ Roberto::~Roberto() {
 void Roberto::initRosControlJoints() {
         
 //// LINEAR ACTUATOR JOINT
-//// Create joint_state_interface 
-//    hardware_interface::JointStateHandle jointStateHandleActuator("actuator_joint", &actuator_joint_position_, &actuator_joint_velocity_, &actuator_joint_effort_);
-//    joint_state_interface_.registerHandle(jointStateHandleActuator);
-//// Create position joint interface accepts position command.
-//    hardware_interface::JointHandle jointPositionHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
-//    position_joint_interface_.registerHandle(jointPositionHandleActuator);
-//// Create Joint Limit interface 
-//    joint_limits_interface::getJointLimits("actuator_joint", nh_, limits);
-//    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleActuator(jointPositionHandleActuator, limits);
-//    positionJointSaturationInterface.registerHandle(jointLimitsHandleActuator);    
-
-// LINEAR ACTUATOR JOINT (velocity edition)
-// Create joint_state_interface 
     hardware_interface::JointStateHandle jointStateHandleActuator("actuator_joint", &actuator_joint_position_, &actuator_joint_velocity_, &actuator_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleActuator);
-//// Create position joint interface accepts position command.
-//    hardware_interface::JointHandle jointVelocityHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
-//    velocity_joint_interface_.registerHandle(jointVelocityHandleActuator);
-// Create position joint interface accepts position command.
     hardware_interface::JointHandle jointPositionHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
     position_joint_interface_.registerHandle(jointPositionHandleActuator);
 
-//// BALL SCREW JOINT
-//// Create joint_state_interface 
-//    hardware_interface::JointStateHandle jointStateHandleBScrew("bscrew_joint", &bscrew_joint_position_, &bscrew_joint_velocity_, &bscrew_joint_effort_);
-//    joint_state_interface_.registerHandle(jointStateHandleBScrew);
-//// Create position joint interface accepts position command.
-//    hardware_interface::JointHandle jointPositionHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
-//    position_joint_interface_.registerHandle(jointPositionHandleBScrew);
-//// Create Joint Limit interface 
-//    joint_limits_interface::getJointLimits("bscrew_joint", nh_, limits);
-//    joint_limits_interface::PositionJointSaturationHandle jointLimitsHandleBScrew(jointPositionHandleBScrew, limits);
-//    positionJointSaturationInterface.registerHandle(jointLimitsHandleBScrew);    
-
-// BALL SCREW JOINT (velocity edition)
-// Create joint_state_interface 
+// BALL SCREW JOINT 
     hardware_interface::JointStateHandle jointStateHandleBScrew("bscrew_joint", &bscrew_joint_position_, &bscrew_joint_velocity_, &bscrew_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleBScrew);
-//// Create position joint interface accepts position command.
-//    hardware_interface::JointHandle jointVelocityHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
-//    velocity_joint_interface_.registerHandle(jointVelocityHandleBScrew);
-// Create position joint interface accepts position command.
     hardware_interface::JointHandle jointPositionHandleBScrew(jointStateHandleBScrew, &bscrew_joint_position_command_);
     position_joint_interface_.registerHandle(jointPositionHandleBScrew);
 
 // AUGER JOINT
-// Create joint state interface
     hardware_interface::JointStateHandle jointStateHandleAuger("auger_joint", &auger_joint_position_, &auger_joint_velocity_, &auger_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleAuger);
-// Create velocity joint interface
     hardware_interface::JointHandle jointVelocityHandleAuger(jointStateHandleAuger, &auger_joint_velocity_command_);
     velocity_joint_interface_.registerHandle(jointVelocityHandleAuger);
 
@@ -89,27 +53,20 @@ void Roberto::initRosControlJoints() {
 // WHEEL JOINTS 
 	for(int i=0; i<2; i++)
 	{
-	// Create joint state interface
         hardware_interface::JointStateHandle jointStateHandleWheel(wheel_joint_name_[i], &wheel_joint_position_[i], &wheel_joint_velocity_[i], &wheel_joint_effort_[i]);
         joint_state_interface_.registerHandle(jointStateHandleWheel);
-    // Create velocity joint interface
 	    hardware_interface::JointHandle jointVelocityHandleWheel(jointStateHandleWheel, &wheel_joint_velocity_command_[i]);
         velocity_joint_interface_.registerHandle(jointVelocityHandleWheel);
-    // Create Joint Limit interface   
         joint_limits_interface::JointLimits limits;
         joint_limits_interface::getJointLimits(wheel_joint_name_[i], nh_, limits);
 	    joint_limits_interface::VelocityJointSaturationHandle jointLimitsHandleWheel(jointVelocityHandleWheel, limits);
 	    velocityJointSaturationInterface.registerHandle(jointLimitsHandleWheel);
 	}
 
-// Register all joints interfaces    
     registerInterface(&joint_state_interface_);
     registerInterface(&velocity_joint_interface_);
     registerInterface(&velocityJointSaturationInterface);
-//    registerInterface(&positionJointSaturationInterface); //Fix limits
     registerInterface(&position_joint_interface_);
-//    registerInterface(&effort_joint_interface_);
-//    registerInterface(&effortJointSaturationInterface);
 }
 
 void Roberto::initPhoenixObjects() 
