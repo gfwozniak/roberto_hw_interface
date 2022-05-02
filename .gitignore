@@ -1,4 +1,6 @@
 .vscode
 .git_old
 .git_old2
+.git_old3
 .gitignore
+*.pyc
