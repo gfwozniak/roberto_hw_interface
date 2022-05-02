@@ -20,6 +20,11 @@ bool RobertoLimits::zeroActuator(std_srvs::Empty::Request& request, std_srvs::Em
     return true;
 }
 
+void enableFeed(const sensor_msgs::JointState::ConstPtr& imsg)
+{
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
+}
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "roberto_limits");
@@ -32,6 +37,8 @@ int main(int argc, char** argv)
     ros::ServiceServer zeroBScrewService = nh.advertiseService("zero_bscrew", &RobertoLimits::zeroBScrew, &ROBOT);
     ros::ServiceServer zeroActuatorService = nh.advertiseService("zero_actuator", &RobertoLimits::zeroActuator, &ROBOT);
     ROS_INFO("Ready to zero bscrew\n");
+
+    ros::Subscriber feed = nh.subscribe("joint_states", 1000, &RobertoLimits::enableFeed, &ROBOT);
 
     ros::spin();
     
