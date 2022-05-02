@@ -99,7 +99,7 @@ void Roberto::initPhoenixObjects()
 //    actuatorMotionMagic.slot0.maxIntegralAccumulator = 20;
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 
-    ros::param::get("wheel_multiplier", wheelMultiplier);
+    ros::param::get("~wheel_multiplier", wheelMultiplier);
 }
 
 
