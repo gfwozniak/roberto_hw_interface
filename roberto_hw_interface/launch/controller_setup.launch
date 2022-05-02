@@ -4,7 +4,12 @@
     <remap from="/bscrew_cmd" to="/Roberto/bscrew_pos_controller/command"/>
     <remap from="/actuator_cmd" to="/Roberto/actuator_pos_controller/command"/>
     <remap from="/auger_cmd" to="/Roberto/auger_controller/command"/>
-    <remap from="/drivetrain_cmd" to="/Drivetrain/cmd_vel"/>
+    <remap from="/drivetrain_cmd" to="/Roberto/drivetrain_controller/cmd_vel"/>
     <!--<remap from="/bscrew_pos" to="/bscrew_pos_state"/>-->
+  </node>
+
+  <node name="joy2" pkg="joy" type="joy_node" output="screen">
+    <param name="dev" value="/dev/input/js1"/>
+    <param name="default_trig_val" value="true"/>
   </node>
 </launch>

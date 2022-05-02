@@ -165,8 +165,15 @@ void Roberto::update(const ros::TimerEvent& e) {
 
 void Roberto::read() {
 
-    ROS_INFO("n");
-// BALL SCREW JOINT READS (FAKE)
+    // WHEEL READS
+    wheel_joint_position_[0] = rightDriveFalcon.GetSelectedSensorPosition();
+    wheel_joint_velocity_[0] = rightDriveFalcon.GetSelectedSensorVelocity();
+    wheel_joint_effort_[0] = rightDriveFalcon.GetSupplyCurrent();
+    wheel_joint_position_[1] = leftDriveFalcon.GetSelectedSensorPosition();
+    wheel_joint_velocity_[1] = leftDriveFalcon.GetSelectedSensorVelocity();
+    wheel_joint_effort_[1] = leftDriveFalcon.GetSupplyCurrent();
+
+    // BSCREW READS
     bscrew_joint_position_ = ballScrewFalcon.GetSelectedSensorPosition();
     bscrew_joint_velocity_ = ballScrewFalcon.GetSelectedSensorVelocity();
     bscrew_joint_effort_ = 0;
@@ -184,7 +191,7 @@ void Roberto::read() {
         limit_msg.data = 0;
     hit_limit_switch->publish(limit_msg);
 
-// LINEAR ACTUATOR JOINT READS (FAKE)
+    // ACTUATOR READS
     actuator_joint_position_ = linearActuatorTalon.GetSelectedSensorPosition();
     actuator_joint_velocity_ = linearActuatorTalon.GetSelectedSensorVelocity();
     actuator_joint_effort_ = 0;
@@ -193,52 +200,21 @@ void Roberto::read() {
     actuator_msg.data = linearActuatorTalon.GetSelectedSensorPosition();
     actuator_pos_pub->publish(actuator_msg);
 
-// AUGER JOINT READS (FAKE)
+    // AUGER READS
     auger_joint_position_ = 0;
     auger_joint_velocity_ = augerFalcon.GetSelectedSensorVelocity();
     auger_joint_effort_ = 0;
-
-// WHEEL JOINT READS
-    wheel_joint_position_[0] = rightDriveFalcon.GetSelectedSensorPosition();
-    wheel_joint_velocity_[0] = rightDriveFalcon.GetSelectedSensorVelocity();
-    wheel_joint_effort_[0] = rightDriveFalcon.GetSupplyCurrent();
-    //ROS_INFO("Current Pos: %.2f, Vel: %.2f",wheel_joint_position_[0],wheel_joint_velocity_[0]);
-    wheel_joint_position_[1] = leftDriveFalcon.GetSelectedSensorPosition();
-    wheel_joint_velocity_[1] = leftDriveFalcon.GetSelectedSensorVelocity();
-    wheel_joint_effort_[1] = leftDriveFalcon.GetSupplyCurrent();
 }
 
 void Roberto::write(ros::Duration elapsed_time) {
-    // Safety
-//    velocityJointSaturationInterface.enforceLimits(elapsed_time);   // enforce limits for JointA and JointB
-//    positionJointSaturationInterface.enforceLimits(elapsed_time); // enforce limits for JointC
-
-    // Right motor control
-//    std::string s1;
-//
-//    s1 = std::to_string(joint_velocity_command_[0]);
-//    ROS_INFO("Joint D");
-//    ROS_INFO(s1.c_str());
-
-//    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-//    rightDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[0]);
-
-    // Left motor control
-//    std::string s2;
-//
-//    s2 = std::to_string(joint_velocity_command_[1]);
-//    ROS_INFO("Joint E");
-//    ROS_INFO(s2.c_str());
-
-//    leftDriveTalon.Set(ControlMode::PercentOutput, joint_velocity_command_[1]);
-
-    // AUGER WRITES
-//    ROS_INFO("Velocity Cmd: %.2f", auger_joint_velocity_command_);
+//    debugging 
+//    ROS_INFO("Value: %.2f", variable);
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
     rightDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[0]);
     leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1]);
+    ROS_INFO("Value: %.2f", wheel_joint_velocity_command_[0]);
 
     // ACTUATOR WRITES
     double actuator_corrected;

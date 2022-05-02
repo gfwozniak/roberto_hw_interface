@@ -3,7 +3,7 @@
   <rosparam file="$(find roberto_hw_interface)/config/controllers.yaml" command="load"/>
   <rosparam file="$(find roberto_hw_interface)/config/joint_limits.yaml" command="load"/>
 
-  <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw">
+  <node name="RobertoHardwareInterface" pkg="roberto_hw_interface" type="roberto_hw" output="screen">
       <param name="drive_kP"    value="0.1"/>
       <param name="drive_kI"    value="0.002"/>
       <param name="drive_kD"    value="5.0"/>
@@ -17,11 +17,10 @@
             /Roberto/auger_controller
             /Roberto/actuator_pos_controller
             /Roberto/bscrew_pos_controller
-            /Roberto/left_wheel_controller
-            /Roberto/right_wheel_controller"> 
+            /Roberto/drivetrain_controller"> 
   </node>
-  
-  <node name="DiffDrive" pkg="roberto_hw_interface" type="diff_drive">
+<!--  
+    <node name="DiffDrive" pkg="roberto_hw_interface" type="diff_drive">
       <param name="totalMod" value="1"/>
       <param name="leftMod" value="1"/>
       <param name="rightMod" value="1"/>
@@ -30,5 +29,7 @@
       <remap from="/outputRight" to="/Roberto/right_wheel_controller/command"/>
       <remap from="/input" to="/Drivetrain/cmd_vel"/>
   </node>
+-->  
+
 
 </launch>

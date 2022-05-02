@@ -18,11 +18,18 @@ class JoystickPublisher:
         self.pub = Publisher
         self.robot = AugerFunctions
 
+    def combineLTRT(self, message):
+        LT = -(message.axes[2] + 1.0) / 2
+        RT = -(message.axes[5] + 1.0) / 2
+        return (RT - LT)
+
     def callback(self, message):
+        # CONFIRMED DRIVETRAIN PUB
         twist = Twist()
-        twist.linear.x = 4*message.axes[1]
-        twist.angular.z = 4*message.axes[0]
+        twist.linear.x = self.combineLTRT(message)
+        twist.angular.z = message.axes[0]
         self.pub.publish(twist)
+
 
         #now lets see what happens when i click a button:
         #if x(0) is clicked: do something
@@ -55,5 +62,5 @@ def start():
     
 if __name__ == '__main__':
         #start the initialize controller script
-       initializeController()
+#       initializeController()
        start()
