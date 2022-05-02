@@ -6,8 +6,8 @@ from robot_api import JoystickReader
 
 def Manual(roberto, joystick):
     while not rospy.is_shutdown():
-        roberto._drivetrain_linear_x_cmd_ = joystick.linearx * 10000
-        roberto._drivetrain_angular_z_cmd_ = joystick.angularz
+        roberto._drivetrain_linear_x_cmd_ = joystick.linearx * 0.5
+        roberto._drivetrain_angular_z_cmd_ = joystick.angularz * 0.5
 
 if __name__ == '__main__':
     try:
