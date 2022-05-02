@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 <launch>
-  <node name="joystickpython" pkg="roberto_hw_interface" type="runnertest.py" output="screen"/>
+  <node name="joystickpython" pkg="roberto_hw_interface" type="runnertest.py" output="screen">
+    <remap from="/bscrew_cmd" to="/Roberto/bscrew_pos_controller/command"/>
+    <remap from="/actuator_cmd" to="/Roberto/actuator_pos_controller/command"/>
+    <remap from="/auger_cmd" to="/Roberto/auger_controller/command"/>
+    <remap from="/drivetrain_cmd" to="/Roberto/drivetrain_controller/cmd_vel"/>
+  </node>
 
   <node name="joy2" pkg="joy" type="joy_node" output="screen">
     <param name="dev" value="/dev/input/js1"/>
