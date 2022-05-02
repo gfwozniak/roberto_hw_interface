@@ -20,7 +20,7 @@ bool RobertoLimits::zeroActuator(std_srvs::Empty::Request& request, std_srvs::Em
     return true;
 }
 
-void enableFeed(const sensor_msgs::JointState::ConstPtr& imsg)
+void RobertoLimits::enableFeed(const sensor_msgs::JointState::ConstPtr& imsg)
 {
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
 }
