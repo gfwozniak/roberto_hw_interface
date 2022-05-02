@@ -98,6 +98,8 @@ void Roberto::initPhoenixObjects()
 //    actuatorMotionMagic.slot0.kI = 1;
 //    actuatorMotionMagic.slot0.maxIntegralAccumulator = 20;
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
+
+    ros::param::get("wheel_multiplier", wheelMultiplier);
 }
 
 
@@ -142,9 +144,8 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // WHEEL WRITES
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[0]);
-    leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1]);
-    ROS_INFO("Im writing");
+    rightDriveFalcon.Set(ControlMode::Velocity, wheel_joint_velocity_command_[0] * wheelMultiplier);
+    leftDriveFalcon.Set(ControlMode::Velocity, -wheel_joint_velocity_command_[1] * wheelMultiplier);
 //
 //    // ACTUATOR WRITES
 //    double actuator_corrected;
