@@ -139,7 +139,7 @@ void Roberto::initPhoenixObjects()
     ballScrewFalcon.ConfigAllSettings(bscrewMotionMagic);
 
     TalonSRXConfiguration actuatorMotionMagic;
-    actuatorMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonSRXFeedbackDevice::QuadEncoder;
+    actuatorMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonSRXFeedbackDevice::Analog;
     actuatorMotionMagic.motionCruiseVelocity = 1;
     actuatorMotionMagic.motionAcceleration = 100;
     actuatorMotionMagic.motionCurveStrength = 1;
