@@ -68,7 +68,6 @@ class RobertoAPI:
             twist.angular.z = (self._drivetrain_angular_z_cmd_)
             self._drivetrain_publisher.publish(twist)
             self._rate.sleep()
-            print("controlLoop")
 #
 # CALLBACK METHODS for SUBSCRIBERS
 #
