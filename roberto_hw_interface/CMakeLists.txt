@@ -247,6 +247,13 @@ target_link_libraries(falcon_test
   Threads::Threads
 )
 
+add_executable(phoenixtuner src/phoenixtuner.cpp)
+target_link_libraries(phoenixtuner
+  CTRE_Phoenix
+  ${catkin_LIBRARIES}
+  Threads::Threads
+)
+
 add_executable(topic_convert src/topic_convert.cpp)
 target_link_libraries(topic_convert ${catkin_LIBRARIES})
 
