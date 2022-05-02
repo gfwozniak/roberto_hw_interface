@@ -4,6 +4,9 @@ import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import Bool
 from sensor_msgs.msg import JointState
+from geometry_msgs.msg import Twist
+from std_srvs.srv import Empty
+from sensor_msgs.msg import Joy
 import time
 
 class RobertoAPI:
@@ -16,107 +19,127 @@ class RobertoAPI:
         self._actuator_publisher = rospy.Publisher('actuator_cmd', Float64, queue_size=1)
         self._bscrew_publisher = rospy.Publisher('bscrew_cmd', Float64, queue_size=1)
         self._auger_publisher = rospy.Publisher('auger_cmd', Float64, queue_size=1)
-        self._drivetrain_publisher = rospy.Publisher('drivetrain_cmd', Float64, queue_size=1)
+        self._drivetrain_publisher = rospy.Publisher('drivetrain_cmd', Twist, queue_size=1)
 
         # INITIALIZE COMMAND VARIABLES
-        self.drivetrain_linear_x_cmd_ = 0.0
-        self.drivetrain_angular_z_cmd_ = 0.0
-        self.actuator_position_cmd_ = 1000.0
-        self.bscrew_position_cmd_ = 0.0
-        self.auger_run_cmd_ = 0.0
+        self._drivetrain_linear_x_cmd_ = 0.0
+        self._drivetrain_angular_z_cmd_ = 0.0
+        self._actuator_position_cmd_ = 0.0
+        self._bscrew_position_cmd_ = 0.0
+        self._auger_run_cmd_ = 0.0
+
+        # INITIALIZE SERVICE CALLS
+        self.zeroBScrew = rospy.ServiceProxy('zero_bscrew', Empty)
+        self.zeroActuator = rospy.ServiceProxy('zero_actuator', Empty)
 
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
         rospy.Subscriber('joint_states', JointState, self._joint_state_callback)
-        rospy.Subscriber('limit_switch', Bool, self._limit_switch_callback)
+        rospy.Subscriber('bscrew_limit', Bool, self._limit_switch_callback)
 
+        # [1] actuator
+        # [2] auger
+        # [3] bscrew
+        # [4] wheel 0
+        # [5] wheel 1
+
+        self.position = [0.0, 0.0, 0.0, 0.0, 0.0]
+        self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0]
+        self.effort = [0.0, 0.0, 0.0, 0.0, 0.0]
+        
 #        # PARAMS
 #        self.actuator_range = rospy.get_param("~actuator_range")
 #        self.bscrew_range = rospy.get_param("~bscrew_range")
 
         # OTHER VARIABLES
         self._rate = rospy.Rate(10) # 10hz
-        self._actuator_error = 2.0;
-        self._bscrew_error = 100000.0;
+        self._actuator_error = 1.0
+        self._bscrew_error = 100000.0
 
+        # TIMER
+        rospy.Timer(rospy.Duration(0.1), self.controlLoop)
+
+    def controlLoop(self, event):
+        while not rospy.is_shutdown():
+            self._auger_publisher.publish(Float64(self._auger_run_cmd_))
+            self._bscrew_publisher.publish(Float64(self._bscrew_position_cmd_))
+            self._actuator_publisher.publish(Float64(self._actuator_position_cmd_))
+            twist = Twist()
+            twist.linear.x = (self._drivetrain_linear_x_cmd_)
+            twist.angular.z = (self._drivetrain_angular_z_cmd_)
+            self._drivetrain_publisher.publish(twist)
+            self._rate.sleep()
+            print("controlLoop")
 #
 # CALLBACK METHODS for SUBSCRIBERS
 #
-    def _actuator_callback(self, value):
-        self.actuator_position = value.data
+    def _joint_state_callback(self, message):
+        pass
 
-    def _bscrew_callback(self, value):
-        self.bscrew_position = value.data
-
-    def _limit_switch_callback(self, value):
-        self.limit_switch_position = value.data
-
-#    def _actuator_callback(self, value):
-#        self.is_moving = value.data
-#
-# HELPER METHODS
-#
-#
-#    def _is_driveable(self):
-#        return True
-#        #to do
-#
+    def _limit_switch_callback(self, message):
+        self.limit_switch_position = message.data
 
 #
-# MOTOR OPERATION METHODS
-#
-    def setAugerVelocityForDuration(self, velocity, seconds):
-        print("set auger velocity")
-        start_time = time.time()
-        while not rospy.is_shutdown():
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            if elapsed_time > seconds:
-                break
-            self._auger_publisher.publish(Float64(velocity))
-            self._rate.sleep()
+# OPERATION METHODS
+# 
+    def setAugerVelocity(self, velocity):
+        self._auger_run_cmd_ = velocity
 
     def setBScrewPosition(self, position):
-        print("set bscrew position")
-        while not rospy.is_shutdown():
-            if ((self.bscrew_position < (position + self._bscrew_error)) and (self.bscrew_position > (position - self._bscrew_error))):
-                break
-            self._bscrew_publisher.publish(Float64(position))
-            self._rate.sleep()
-        
-    def setBScrewPositionAndAugerVelocity(self, position, velocity):
-        print("setting bscrew position with auger speed")
-        while not rospy.is_shutdown():
-            if ((self.bscrew_position < (position + self._bscrew_error)) and (self.bscrew_position > (position - self._bscrew_error))):
-                print("good")
-                break
-            self._bscrew_publisher.publish(Float64(position))
-            self._auger_publisher.publish(Float64(velocity))
-            self._rate.sleep()
-        self._auger_publisher.publish(Float64(0))
+        self._bscrew_position_cmd_ = position
 
-    def setActuatorPositionTimeout(self, position, seconds):
-        print("setting actuator position")
-        start_time = time.time()
-        while not rospy.is_shutdown():
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            if elapsed_time > seconds:
-                break
-            if ((self.actuator_position < (position + self._actuator_error)) and (self.actuator_position > (position - self._actuator_error))):
-                break
-            omsg = Float64()
-            omsg.data = position
-            self._actuator_publisher.publish(omsg)
-            self._rate.sleep()
+    def setActuatorPosition(self, position):
+        self._actuator_position_cmd_ = position
 
-    def zeroBScrew(self):
-        print("zeroing bscrew")
-        while not rospy.is_shutdown():
-            if (self.limit_switch_position):
-                break
-            self._bscrew_publisher.publish(Float64(8000000))
-            self._rate.sleep()
-        self._bscrew_publisher.publish(Float64(0))
-        
+    def setDrivetrainVelocity(self, linearvelocity, angularvelocity):
+        self._drivetrain_angular_z_cmd_ = angularvelocity
+        self._drivetrain_linear_x_cmd_ = linearvelocity
+
     def stopMotors(self):
-        pass
+        self._auger_run_cmd_ = 0.0
+        self._drivetrain_angular_z_cmd_ = 0.0
+        self._drivetrain_linear_x_cmd_ = 0.0
+        self._bscrew_position_cmd_ = self.position[3]
+        self._actuator_position_cmd_ = self.position[1]
+
+    def timeoutActuatorPosition(self, timeout, period, targetpos):
+        mintarget = targetpos - self._actuator_error
+        maxtarget = targetpos + self._actuator_error
+        mustend = time.time() + timeout
+        while time.time() < mustend:
+            if (self.position[1] > mintarget and self.position[1] < maxtarget): return True
+            time.sleep(period)
+        return False
+
+    def timeoutBScrewPosition(self, timeout, period, targetpos):
+        mintarget = targetpos - self._bscrew_error
+        maxtarget = targetpos + self._bscrew_error
+        mustend = time.time() + timeout
+        while time.time() < mustend:
+            if (self.position[1] > mintarget and self.position[1] < maxtarget): return True
+            time.sleep(period)
+        return False
+    
+class JoystickReader:
+
+    def __init__(self):
+        self.linearx = 0.0
+        self.angularz = 0.0
+        self.A = False
+        self.B = False
+        self.Y = False
+        self.X = False
+        rospy.Subscriber("joy", Joy, self._joystick_callback)
+        
+    def combineLTRT(self, message):
+        LT = -(message.axes[2] + 1.0) / 2
+        RT = -(message.axes[5] + 1.0) / 2
+        return (RT - LT)
+    
+    def _joystick_callback(self, message):
+        self.linearx = self.combineLTRT(message)
+        self.angularz = message.axes[0]
+        self.A = message.buttons[0]
+        self.B = message.buttons[1]
+        self.X = message.buttons[2]
+        self.Y = message.buttons[3]
+

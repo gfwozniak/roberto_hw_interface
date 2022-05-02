@@ -29,5 +29,4 @@ class RobertoLimits
 
         ros::Publisher * bscrew_limit_pub;
         ros::Publisher * actuator_limit_pub;
-
 };
