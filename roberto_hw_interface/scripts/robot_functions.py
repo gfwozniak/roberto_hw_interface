@@ -13,24 +13,32 @@ class RobertoFunctions:
     def interrupt(self):
         self.e.set()
         while True:
-            if (not self.e.is_set()):
+            if(not self.e.is_set()):
                 break
-            time.sleep(.25)
+            time.sleep(.1)
+
+    def delayinput(self):
+        while True:
+            if(not self.e.is_set()):
+                break
+            time.sleep(.1)
 
     def initialMotors(self):
+        self.waitUntilJointStatePublish()
         self.robot_api.setAugerVelocity(0.0)
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[2])
         self.robot_api.setActuatorPosition(self.robot_api.position[0])
-        print(self.robot_api.position[0])
         self.waitUntilEvent()
 
     def stopMotors(self):
         self.interrupt()
+        print("stopping motors")
         self.robot_api.setAugerVelocity(0.0)
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[2])
         self.robot_api.setActuatorPosition(self.robot_api.position[0])
+        print("motors stopped")
         self.waitUntilEvent()
 
     def zeroBScrew(self):
@@ -48,40 +56,45 @@ class RobertoFunctions:
         self.robot_api.setBScrewPosition(0)
         print("zero actuator")
         self.robot_api.setActuatorPosition(10000)
-        time.sleep(10)
+        self.waitUntilTime(10)
         self.robot_api.zeroActuator()
         self.robot_api.setActuatorPosition(0)
+        print("auger zeroed")
         self.waitUntilEvent()
 
-#    def waitUntilActuatorPosition(self, timeout, period, targetpos):
-#        mintarget = targetpos - self._actuator_error
-#        maxtarget = targetpos + self._actuator_error
-#        mustend = time.time() + timeout
-#        while time.time() < mustend:
-#            if (self.position[1] > mintarget and self.position[1] < maxtarget): 
-#                return True
-#            time.sleep(period)
-#        return False
-#
-#    def waitUntilBScrewPosition(self, timeout, period, targetpos):
-#        mintarget = targetpos - self._bscrew_error
-#        maxtarget = targetpos + self._bscrew_error
-#        mustend = time.time() + timeout
-#        while time.time() < mustend:
-#            if (self.position[1] > mintarget and self.position[1] < maxtarget): 
-#                return True
-#            time.sleep(period)
-#        return False
+    def returnToNeutral(self):
+        self.interrupt()
+        print("resetting bscrew")
+        self.robot_api.setBScrewPosition(-10000)
+        self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=-10000,bscrew_error=1000)
+        print("resetting actuator")
+        self.robot_api.setActuatorPosition(-10)
+        self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=-10,actuator_error=1)
+        print("in neutral")
+        self.waitUntilEvent()
+
+# Waiting events
     
     def waitUntilLimit(self):
-        mustend = time.time() + 100
+        mustend = time.time() + 60
         while time.time() < mustend:
             if (self.robot_api.limit_switch_position): 
                 return True
             if (self.e.is_set()):
                 self.e.clear()
                 return False
-            time.sleep(.5)
+            time.sleep(.05)
+        return False
+
+    def waitUntilJointStatePublish(self):
+        mustend = time.time() + 60
+        while time.time() < mustend:
+            if (self.robot_api.is_joint_initialized): 
+                return True
+            if (self.e.is_set()):
+                self.e.clear()
+                return False
+            time.sleep(.05)
         return False
 
     def waitUntilEvent(self):
@@ -89,8 +102,43 @@ class RobertoFunctions:
             if (self.e.is_set()):
                 self.e.clear()
                 break
-            time.sleep(.5)
+            time.sleep(.05)
 
+    def waitUntilTime(self, seconds):
+        mustend = time.time() + seconds
+        while time.time() < mustend:
+            if (self.e.is_set()):
+                self.e.clear()
+                return False
+            time.sleep(.05)
+        return False
+        
+    def waitUntilActuatorPosition(self, timeout, period, targetpos, actuator_error):
+        mintarget = targetpos - actuator_error
+        maxtarget = targetpos + actuator_error
+        mustend = time.time() + timeout
+        while time.time() < mustend:
+            if (self.robot_api.position[0] > mintarget and self.robot_api.position[0] < maxtarget): 
+                return True
+            if (self.e.is_set()):
+                self.e.clear()
+                return False
+            time.sleep(period)
+        return False
+
+    def waitUntilBScrewPosition(self, timeout, period, targetpos, bscrew_error):
+        mintarget = targetpos - bscrew_error
+        maxtarget = targetpos + bscrew_error
+        mustend = time.time() + timeout
+        while time.time() < mustend:
+            if (self.robot_api.position[2] > mintarget and self.robot_api.position[2] < maxtarget): 
+                return True
+            if (self.e.is_set()):
+                self.e.clear()
+                return False
+            time.sleep(period)
+        return False
+    
 #    def __init__(self):
 #        self.augerapi = RobertoAPI()
 #        self.isRunning = False

@@ -26,37 +26,49 @@ if __name__ == '__main__':
     robot_functions = RobertoFunctions()
     joystick = JoystickReader()
 
-    init = threading.Thread(target=robot_functions.initialMotors)
-    init.start()
+    init_thread = threading.Thread(target=robot_functions.initialMotors)
+    init_thread.start()
 
-    joystick.waitUntilX(timeout=100, period=.25)
+    print("waiting for x")
+    joystick.waitUntilX(timeout=100, period=.1)
     print("x pressed")
-    initialZero = threading.Thread(target=robot_functions.zeroAuger)
-    initialZero.start()
+    zero_thread = threading.Thread(target=robot_functions.zeroAuger)
+    zero_thread.start()
+    robot_functions.delayinput()
 
     while True:
         if joystick.A:
-            pass
+            thread = threading.Thread(target=robot_functions.stopMotors)
+            thread.start()
+            robot_functions.delayinput()
             #stop motors
         if joystick.B:
-            pass
+            continue
             #j
         if joystick.X:
-            pass
+            thread = threading.Thread(target=robot_functions.zeroAuger)
+            thread.start()
+            robot_functions.delayinput()
+            continue
             #zero auger
         if joystick.Y:
-            pass
+            continue
             #deposit
         if joystick.RB:
-            pass
+            thread = threading.Thread(target=robot_functions.returnToNeutral)
+            thread.start()
+            robot_functions.delayinput()
             #return to driving position
         if joystick.LB:
-            pass
+            break
+            continue
             #return to driving position
-        
-
+        time.sleep(0.1)
     
+    robot_functions.e.set()
     print("finished")
+
+    exit()
 
     #hold all motors await input to zero actuator and bscrew
 

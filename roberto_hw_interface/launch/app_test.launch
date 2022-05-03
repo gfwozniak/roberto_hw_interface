@@ -5,6 +5,7 @@
     <remap from="/bscrew_cmd" to="/Roberto/bscrew_pos_controller/command"/>
     <remap from="/actuator_cmd" to="/Roberto/actuator_pos_controller/command"/>
     <remap from="/auger_cmd" to="/Roberto/auger_controller/command"/>
+    <remap from="/limit_cmd" to="/Roberto/limit_switch/command"/>
     <!--<remap from="/bscrew_pos" to="/bscrew_pos_state"/>-->
   </node>
 

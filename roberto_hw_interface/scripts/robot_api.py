@@ -20,6 +20,7 @@ class RobertoAPI:
         self._bscrew_publisher = rospy.Publisher('bscrew_cmd', Float64, queue_size=1)
         self._auger_publisher = rospy.Publisher('auger_cmd', Float64, queue_size=1)
         self._drivetrain_publisher = rospy.Publisher('drivetrain_cmd', Twist, queue_size=1)
+        self._limit_publisher = rospy.Publisher('limit_cmd', Float64, queue_size=1)
 
         # INITIALIZE COMMAND VARIABLES
         self._drivetrain_linear_x_cmd_ = 0.0
@@ -27,27 +28,17 @@ class RobertoAPI:
         self._actuator_position_cmd_ = 0.0
         self._bscrew_position_cmd_ = 0.0
         self._auger_run_cmd_ = 0.0
-
-        # INITIALIZE SERVICE CALLS
-        self.zeroBScrew = rospy.ServiceProxy('zero_bscrew', Empty)
-        #rospy.wait_for_service('zero_actuator')
-        self.zeroActuator = rospy.ServiceProxy('zero_actuator', Empty)
+        self._limit_position_cmd_ = 0.0
 
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
         rospy.Subscriber('joint_states', JointState, self._joint_state_callback)
-        rospy.Subscriber('bscrew_limit', Bool, self._limit_switch_callback)
 
-        # [0] actuator
-        # [1] auger
-        # [2] bscrew
-        # [3] wheel 0
-        # [4] wheel 1
-
-        self.position = [0.0, 0.0, 0.0, 0.0, 0.0]
-        self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0]
-        self.effort = [0.0, 0.0, 0.0, 0.0, 0.0]
+        self.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.effort = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         
         self.limit_switch_position = False
+        self.is_joint_initialized = False
 
 #        # PARAMS
 #        self.actuator_range = rospy.get_param("~actuator_range")
@@ -59,13 +50,21 @@ class RobertoAPI:
         self._bscrew_error = 100000.0
 
         # TIMER
-        rospy.Timer(rospy.Duration(0.1), self.controlLoop)
+        rospy.Timer(rospy.Duration(0.05), self.controlLoop)
 
-    def controlLoop(self, event):
+        # [0] actuator
+        # [1] auger
+        # [2] bscrew
+        # [3] limit_switch
+        # [4] wheel 0
+        # [5] wheel 1
+
+    def controlLoop(self, message):
         while not rospy.is_shutdown():
             self._auger_publisher.publish(Float64(self._auger_run_cmd_))
             self._bscrew_publisher.publish(Float64(self._bscrew_position_cmd_))
             self._actuator_publisher.publish(Float64(self._actuator_position_cmd_))
+            self._limit_publisher.publish(Float64(self._limit_position_cmd_))
             twist = Twist()
             twist.linear.x = (self._drivetrain_linear_x_cmd_)
             twist.angular.z = (self._drivetrain_angular_z_cmd_)
@@ -79,9 +78,8 @@ class RobertoAPI:
         self.position = list(message.position)
         self.velocity = list(message.velocity)
         self.effort = list(message.effort)
-
-    def _limit_switch_callback(self, message):
-        self.limit_switch_position = message.data
+        self.limit_switch_position = (self.position[3] > 0.5)
+        self.is_joint_initialized = (self.effort[3] > 50)
 
 #
 # OPERATION METHODS
@@ -99,26 +97,18 @@ class RobertoAPI:
         self._drivetrain_angular_z_cmd_ = angularvelocity
         self._drivetrain_linear_x_cmd_ = linearvelocity
 
-
-    def waitUntilActuatorPosition(self, timeout, period, targetpos):
-        mintarget = targetpos - self._actuator_error
-        maxtarget = targetpos + self._actuator_error
-        mustend = time.time() + timeout
+    def zeroActuator(self):
+        self._limit_position_cmd_ = 2
+        mustend = time.time() + 10
         while time.time() < mustend:
-            if (self.position[1] > mintarget and self.position[1] < maxtarget): 
+            if (self.position[0] < 1 and self.position[0] > -1): 
+                print("successfully zeroed")
                 return True
-            time.sleep(period)
+            time.sleep(.1)
         return False
+        self._limit_position_cmd_ = 0
 
-    def waitUntilBScrewPosition(self, timeout, period, targetpos):
-        mintarget = targetpos - self._bscrew_error
-        maxtarget = targetpos + self._bscrew_error
-        mustend = time.time() + timeout
-        while time.time() < mustend:
-            if (self.position[1] > mintarget and self.position[1] < maxtarget): 
-                return True
-            time.sleep(period)
-        return False
+
     
     def waitUntilLimit(self, timeout, period):
         mustend = time.time() + timeout
@@ -131,7 +121,6 @@ class RobertoAPI:
 class JoystickReader:
 
     def __init__(self):
-        print('i exist')
         self.linearx = 0.0
         self.angularz = 0.0
         self.A = False
