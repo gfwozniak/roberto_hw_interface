@@ -154,6 +154,7 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // BSCREW WRITES
     ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
+    ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
 //
 //    // AUGER WRITES
 //    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);

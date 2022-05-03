@@ -20,16 +20,16 @@ class RobertoFunctions:
     def initialMotors(self):
         self.robot_api.setAugerVelocity(0.0)
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
-        self.robot_api.setBScrewPosition(self.robot_api.position[3])
-        self.robot_api.setActuatorPosition(self.robot_api.position[1])
+        self.robot_api.setBScrewPosition(self.robot_api.position[2])
+        self.robot_api.setActuatorPosition(self.robot_api.position[0])
         self.waitUntilEvent()
 
     def stopMotors(self):
         self.interrupt()
         self.robot_api.setAugerVelocity(0.0)
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
-        self.robot_api.setBScrewPosition(self.robot_api.position[3])
-        self.robot_api.setActuatorPosition(self.robot_api.position[1])
+        self.robot_api.setBScrewPosition(self.robot_api.position[2])
+        self.robot_api.setActuatorPosition(self.robot_api.position[0])
         self.waitUntilEvent()
 
     def zeroBScrew(self):
