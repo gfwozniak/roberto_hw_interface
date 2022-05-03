@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     joystick.waitUntilX(timeout=100, period=.25)
     print("x pressed")
-    initialZero = threading.Thread(target=robot_functions.zeroAuger())
+    initialZero = threading.Thread(target=robot_functions.zeroBScrew())
     
     print("finished")
 

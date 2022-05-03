@@ -23,7 +23,7 @@ class RobertoFunctions:
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[3])
         self.robot_api.setActuatorPosition(self.robot_api.position[1])
-        self.waitUntilEvent
+        self.waitUntilEvent()
         print("end initial motors")
 
     def stopMotors(self):
@@ -32,7 +32,7 @@ class RobertoFunctions:
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[3])
         self.robot_api.setActuatorPosition(self.robot_api.position[1])
-        self.waitUntilEvent
+        self.waitUntilEvent()
 
     def zeroBScrew(self):
         print("start zeroBscrew")
@@ -40,7 +40,7 @@ class RobertoFunctions:
         self.robot_api.setBScrewPosition(8000000)
         self.waitUntilLimit()
         self.robot_api.setBScrewPosition(0)
-        self.waitUntilEvent
+        self.waitUntilEvent()
         print("end zeroBscrew")
 
 #    def waitUntilActuatorPosition(self, timeout, period, targetpos):
@@ -77,6 +77,7 @@ class RobertoFunctions:
     def waitUntilEvent(self):
         while True:
             if (self.e.is_set()):
+                print(self.e.is_set())
                 self.e.clear()
                 break
             time.sleep(.5)
