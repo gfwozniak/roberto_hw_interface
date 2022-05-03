@@ -166,7 +166,7 @@ void Roberto::write(ros::Duration elapsed_time) {
     // BSCREW WRITES
     if (ballScrewFalcon.GetSelectedSensorVelocity() < 0)
     {
-        ballScrewFalcon.ConfigMotionCruiseVelocity(25000);
+        ballScrewFalcon.ConfigMotionCruiseVelocity(30000);
     }
     else
     {
