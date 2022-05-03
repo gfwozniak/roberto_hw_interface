@@ -22,6 +22,7 @@ class RobertoFunctions:
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[2])
         self.robot_api.setActuatorPosition(self.robot_api.position[0])
+        print(self.robot_api.position[0])
         self.waitUntilEvent()
 
     def stopMotors(self):

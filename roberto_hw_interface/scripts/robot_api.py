@@ -29,9 +29,8 @@ class RobertoAPI:
         self._auger_run_cmd_ = 0.0
 
         # INITIALIZE SERVICE CALLS
-        rospy.wait_for_service('zero_bscrew')
         self.zeroBScrew = rospy.ServiceProxy('zero_bscrew', Empty)
-        rospy.wait_for_service('zero_actuator')
+        #rospy.wait_for_service('zero_actuator')
         self.zeroActuator = rospy.ServiceProxy('zero_actuator', Empty)
 
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
@@ -132,6 +131,7 @@ class RobertoAPI:
 class JoystickReader:
 
     def __init__(self):
+        print('i exist')
         self.linearx = 0.0
         self.angularz = 0.0
         self.A = False

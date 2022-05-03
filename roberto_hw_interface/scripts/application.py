@@ -55,7 +55,6 @@ if __name__ == '__main__':
             #return to driving position
         
 
-        initialZero.join()
     
     print("finished")
 
