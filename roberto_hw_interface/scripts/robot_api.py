@@ -38,11 +38,11 @@ class RobertoAPI:
         rospy.Subscriber('joint_states', JointState, self._joint_state_callback)
         rospy.Subscriber('bscrew_limit', Bool, self._limit_switch_callback)
 
-        # [1] actuator
-        # [2] auger
-        # [3] bscrew
-        # [4] wheel 0
-        # [5] wheel 1
+        # [0] actuator
+        # [1] auger
+        # [2] bscrew
+        # [3] wheel 0
+        # [4] wheel 1
 
         self.position = [0.0, 0.0, 0.0, 0.0, 0.0]
         self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0]
@@ -76,7 +76,10 @@ class RobertoAPI:
 # CALLBACK METHODS for SUBSCRIBERS
 #
     def _joint_state_callback(self, message):
-        pass
+        msg = JointState()
+        self.position = list(message.position)
+        self.velocity = list(message.velocity)
+        self.effort = list(message.effort)
 
     def _limit_switch_callback(self, message):
         self.limit_switch_position = message.data
