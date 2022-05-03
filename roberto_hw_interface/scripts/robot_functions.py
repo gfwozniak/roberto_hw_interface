@@ -43,6 +43,17 @@ class RobertoFunctions:
         self.waitUntilEvent()
         print("end zeroBscrew")
 
+    def zeroAuger(self):
+        print("start zeroBscrew")
+        self.interrupt()
+        self.robot_api.setBScrewPosition(8000000)
+        self.waitUntilLimit()
+        self.robot_api.setBScrewPosition(0)
+        self.robot_api.setActuatorPosition(10000)
+        time.sleep(10)
+        self.robot_api.zeroActuator()
+        self.waitUntilEvent()
+
 #    def waitUntilActuatorPosition(self, timeout, period, targetpos):
 #        mintarget = targetpos - self._actuator_error
 #        maxtarget = targetpos + self._actuator_error

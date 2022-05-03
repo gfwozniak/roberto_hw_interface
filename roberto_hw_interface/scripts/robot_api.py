@@ -133,6 +133,8 @@ class JoystickReader:
         self.B = False
         self.Y = False
         self.X = False
+        self.LB = False
+        self.RB = False
         rospy.Subscriber("joy", Joy, self._joystick_callback)
         
     def _combineLTRT(self, message):
@@ -147,6 +149,8 @@ class JoystickReader:
         self.B = message.buttons[1]
         self.X = message.buttons[2]
         self.Y = message.buttons[3]
+        self.LB = message.buttons[4]
+        self.RB = message.buttons[5]
 
     def waitUntilX(self, timeout, period):
         mustend = time.time() + timeout
