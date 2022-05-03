@@ -99,10 +99,8 @@ void Roberto::initPhoenixObjects()
     actuatorMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonSRXFeedbackDevice::Analog;
     actuatorMotionMagic.motionCruiseVelocity = 1;
     actuatorMotionMagic.motionAcceleration = 100;
-    actuatorMotionMagic.motionCurveStrength = 1;
+    actuatorMotionMagic.motionCurveStrength = 4;
     actuatorMotionMagic.slot0.kP = 50;
-    actuatorMotionMagic.slot0.kI = 0.1;
-    actuatorMotionMagic.slot0.maxIntegralAccumulator = 200;
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 
     ros::param::get("~wheel_multiplier", wheelMultiplier);
