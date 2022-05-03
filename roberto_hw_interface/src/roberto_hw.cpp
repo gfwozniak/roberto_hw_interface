@@ -101,7 +101,7 @@ void Roberto::initPhoenixObjects()
     actuatorMotionMagic.motionAcceleration = 100;
     actuatorMotionMagic.motionCurveStrength = 1;
     actuatorMotionMagic.slot0.kP = 50;
-    actuatorMotionMagic.slot0.kI = 1;
+    actuatorMotionMagic.slot0.kI = 0.1;
     actuatorMotionMagic.slot0.maxIntegralAccumulator = 200;
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 
@@ -165,7 +165,14 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // BSCREW WRITES
     ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
-    ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
+    if (ballScrewFalcon.IsFwdLimitSwitchClosed())
+    {
+        ballScrewFalcon.Set(ControlMode::PercentOutput, -.5);
+    }
+    else
+    {
+        ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
+    }
 
     // AUGER WRITES
     augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);

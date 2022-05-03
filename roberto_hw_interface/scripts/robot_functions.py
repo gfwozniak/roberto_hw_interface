@@ -53,7 +53,7 @@ class RobertoFunctions:
         print("zero b screw")
         self.robot_api.setBScrewPosition(8000000)
         self.waitUntilLimit()
-        self.robot_api.setBScrewPosition(0)
+        self.robot_api.setBScrewPosition(10000)
         print("zero actuator")
         self.robot_api.setActuatorPosition(10000)
         self.waitUntilTime(10)
