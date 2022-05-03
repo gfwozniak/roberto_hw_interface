@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
     ros::Subscriber feed = nh.subscribe("joint_states", 1000, &RobertoLimits::enableFeed, &ROBOT);
 
-    ros::Timer timer = nh.createTimer(ros::Duration(0.1), &RobertoLimits::readLimit, &ROBOT);
+    ros::Timer timer = nh.createTimer(ros::Duration(0.1), std::bind(&RobertoLimits::readLimit, &ROBOT));
 
     spinner.spin();
     
