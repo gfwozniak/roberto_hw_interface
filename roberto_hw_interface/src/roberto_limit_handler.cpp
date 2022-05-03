@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "roberto_limits");
     ros::NodeHandle nh;
+    ros::MultiThreadedSpinner spinner(2);
 
     auto bscrew_limit_pub = nh.advertise<std_msgs::Bool>("bscrew_limit", 100);
     auto actuator_limit_pub = nh.advertise<std_msgs::Bool>("actuator_limit", 100);
@@ -51,7 +52,7 @@ int main(int argc, char** argv)
 
     ros::Timer timer = nh.createTimer(ros::Duration(0.1), &RobertoLimits::readLimit, &ROBOT);
 
-    ros::spin();
+    spinner.spin();
     
     return 0;
 }
