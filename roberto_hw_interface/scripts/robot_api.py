@@ -46,6 +46,8 @@ class RobertoAPI:
         self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0]
         self.effort = [0.0, 0.0, 0.0, 0.0, 0.0]
         
+        self.limit_switch_position = False
+
 #        # PARAMS
 #        self.actuator_range = rospy.get_param("~actuator_range")
 #        self.bscrew_range = rospy.get_param("~bscrew_range")
@@ -76,6 +78,7 @@ class RobertoAPI:
 
     def _limit_switch_callback(self, message):
         self.limit_switch_position = message.data
+        print(self.limit_switch_position)
 
 #
 # OPERATION METHODS
@@ -93,28 +96,32 @@ class RobertoAPI:
         self._drivetrain_angular_z_cmd_ = angularvelocity
         self._drivetrain_linear_x_cmd_ = linearvelocity
 
-    def stopMotors(self):
-        self._auger_run_cmd_ = 0.0
-        self._drivetrain_angular_z_cmd_ = 0.0
-        self._drivetrain_linear_x_cmd_ = 0.0
-        self._bscrew_position_cmd_ = self.position[3]
-        self._actuator_position_cmd_ = self.position[1]
 
-    def timeoutActuatorPosition(self, timeout, period, targetpos):
+    def waitUntilActuatorPosition(self, timeout, period, targetpos):
         mintarget = targetpos - self._actuator_error
         maxtarget = targetpos + self._actuator_error
         mustend = time.time() + timeout
         while time.time() < mustend:
-            if (self.position[1] > mintarget and self.position[1] < maxtarget): return True
+            if (self.position[1] > mintarget and self.position[1] < maxtarget): 
+                return True
             time.sleep(period)
         return False
 
-    def timeoutBScrewPosition(self, timeout, period, targetpos):
+    def waitUntilBScrewPosition(self, timeout, period, targetpos):
         mintarget = targetpos - self._bscrew_error
         maxtarget = targetpos + self._bscrew_error
         mustend = time.time() + timeout
         while time.time() < mustend:
-            if (self.position[1] > mintarget and self.position[1] < maxtarget): return True
+            if (self.position[1] > mintarget and self.position[1] < maxtarget): 
+                return True
+            time.sleep(period)
+        return False
+    
+    def waitUntilLimit(self, timeout, period):
+        mustend = time.time() + timeout
+        while time.time() < mustend:
+            if (self.limit_switch_position): 
+                return True
             time.sleep(period)
         return False
     
@@ -129,7 +136,7 @@ class JoystickReader:
         self.X = False
         rospy.Subscriber("joy", Joy, self._joystick_callback)
         
-    def combineLTRT(self, message):
+    def _combineLTRT(self, message):
         LT = -(message.axes[2] + 1.0) / 2
         RT = -(message.axes[5] + 1.0) / 2
         return (RT - LT)
@@ -142,3 +149,10 @@ class JoystickReader:
         self.X = message.buttons[2]
         self.Y = message.buttons[3]
 
+    def waitUntilX(self, timeout, period):
+        mustend = time.time() + timeout
+        while time.time() < mustend:
+            if self.X: 
+                return True
+            time.sleep(period)
+        return False

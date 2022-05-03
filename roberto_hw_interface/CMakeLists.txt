@@ -171,6 +171,8 @@ ${catkin_INCLUDE_DIRS}
    scripts/fakeapi.py
    scripts/robot_api.py
    scripts/auger_functions.py
+   scripts/application.py
+   scripts/robot_functions.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

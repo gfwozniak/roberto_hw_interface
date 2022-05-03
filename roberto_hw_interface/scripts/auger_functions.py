@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from roberto_hw_interface.scripts.robot_api import RobertoAPI
+from robot_api import RobertoAPI
 
 class AugerFunctions:
 
