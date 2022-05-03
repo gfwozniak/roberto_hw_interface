@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     while True:
         if joystick.A:
-            thread = threading.Thread(target=robot_functions.stopMotors)
+            thread = threading.Thread(target=robot_functions.noMotorCommand)
             thread.start()
             robot_functions.delayinput()
             #stop motors

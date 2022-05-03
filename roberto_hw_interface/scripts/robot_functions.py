@@ -15,14 +15,12 @@ class RobertoFunctions:
         while True:
             if(not self.e.is_set()):
                 break
-            time.sleep(.1)
         self.stopMotors()
 
     def delayinput(self):
         while True:
             if(not self.e.is_set()):
                 break
-            time.sleep(.1)
 
     def initialMotors(self):
         if(not self.waitUntilJointStatePublish()):
@@ -37,7 +35,7 @@ class RobertoFunctions:
         self.robot_api.setBScrewPosition(self.robot_api.position[2])
         self.robot_api.setActuatorPosition(self.robot_api.position[0])
 
-    def empty(self):
+    def noMotorCommand(self):
         self.interrupt()
         print("motors stopped")
         if(not self.waitUntilEvent()):
@@ -61,7 +59,7 @@ class RobertoFunctions:
         self.robot_api.setBScrewPosition(-10000)
         print("zero actuator")
         self.robot_api.setActuatorPosition(10000)
-        if(not self.waitUntilTime(10)):
+        if(not self.waitUntilTime(5)):
             return
         self.robot_api.zeroActuator()
         self.robot_api.setActuatorPosition(0)
@@ -121,7 +119,7 @@ class RobertoFunctions:
                 self.e.clear()
                 return False
             time.sleep(.05)
-        return False
+        return True
         
     def waitUntilActuatorPosition(self, timeout, period, targetpos, actuator_error):
         mintarget = targetpos - actuator_error

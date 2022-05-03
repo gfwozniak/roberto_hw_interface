@@ -72,6 +72,8 @@ class Roberto : public hardware_interface::RobotHW
         double limit_switch_effort_;
         double limit_switch_zero_;
 
+        bool fake_limit_ = false;
+
 
         ctre::phoenix::motorcontrol::can::TalonFX rightDriveFalcon;
         ctre::phoenix::motorcontrol::can::TalonFX leftDriveFalcon;

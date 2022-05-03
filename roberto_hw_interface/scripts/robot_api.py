@@ -70,6 +70,7 @@ class RobertoAPI:
             twist.angular.z = (self._drivetrain_angular_z_cmd_)
             self._drivetrain_publisher.publish(twist)
             self._rate.sleep()
+            print(self._limit_position_cmd_)
 #
 # CALLBACK METHODS for SUBSCRIBERS
 #
@@ -98,15 +99,17 @@ class RobertoAPI:
         self._drivetrain_linear_x_cmd_ = linearvelocity
 
     def zeroActuator(self):
+        print("zeroing")
         self._limit_position_cmd_ = 2
         mustend = time.time() + 10
         while time.time() < mustend:
             if (self.position[0] < 1 and self.position[0] > -1): 
                 print("successfully zeroed")
+                self._limit_position_cmd_ = 0
                 return True
             time.sleep(.1)
-        return False
         self._limit_position_cmd_ = 0
+        return False
 
 
     
