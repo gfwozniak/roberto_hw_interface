@@ -16,6 +16,7 @@ class RobertoFunctions:
             if(not self.e.is_set()):
                 break
             time.sleep(.1)
+        self.stopMotors()
 
     def delayinput(self):
         while True:
@@ -24,54 +25,63 @@ class RobertoFunctions:
             time.sleep(.1)
 
     def initialMotors(self):
-        self.waitUntilJointStatePublish()
-        self.robot_api.setAugerVelocity(0.0)
-        self.robot_api.setDrivetrainVelocity(0.0, 0.0)
-        self.robot_api.setBScrewPosition(self.robot_api.position[2])
-        self.robot_api.setActuatorPosition(self.robot_api.position[0])
-        self.waitUntilEvent()
+        if(not self.waitUntilJointStatePublish()):
+            return
+        self.stopMotors()
+        if(not self.waitUntilEvent()):
+            return
 
     def stopMotors(self):
-        self.interrupt()
-        print("stopping motors")
         self.robot_api.setAugerVelocity(0.0)
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[2])
         self.robot_api.setActuatorPosition(self.robot_api.position[0])
+
+    def empty(self):
+        self.interrupt()
         print("motors stopped")
-        self.waitUntilEvent()
+        if(not self.waitUntilEvent()):
+            return
 
     def zeroBScrew(self):
         self.interrupt()
         self.robot_api.setBScrewPosition(8000000)
-        self.waitUntilLimit()
+        if(not self.waitUntilLimit()):
+            return
         self.robot_api.setBScrewPosition(0)
-        self.waitUntilEvent()
+        if(not self.waitUntilEvent()):
+            return
 
     def zeroAuger(self):
         self.interrupt()
         print("zero b screw")
         self.robot_api.setBScrewPosition(8000000)
-        self.waitUntilLimit()
-        self.robot_api.setBScrewPosition(10000)
+        if(not self.waitUntilLimit()):
+            return
+        self.robot_api.setBScrewPosition(-10000)
         print("zero actuator")
         self.robot_api.setActuatorPosition(10000)
-        self.waitUntilTime(10)
+        if(not self.waitUntilTime(10)):
+            return
         self.robot_api.zeroActuator()
         self.robot_api.setActuatorPosition(0)
         print("auger zeroed")
-        self.waitUntilEvent()
+        if(not self.waitUntilEvent()):
+            return
 
     def returnToNeutral(self):
         self.interrupt()
         print("resetting bscrew")
         self.robot_api.setBScrewPosition(-10000)
-        self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=-100000,bscrew_error=6000)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=-100000,bscrew_error=6000)):
+            return
         print("resetting actuator")
         self.robot_api.setActuatorPosition(-10)
-        self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=-10,actuator_error=1)
+        if(not self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=-10,actuator_error=1)):
+            return
         print("in neutral")
-        self.waitUntilEvent()
+        if(not self.waitUntilEvent()):
+            return
 
 # Waiting events
     
@@ -101,7 +111,7 @@ class RobertoFunctions:
         while True:
             if (self.e.is_set()):
                 self.e.clear()
-                break
+                return False
             time.sleep(.05)
 
     def waitUntilTime(self, seconds):
