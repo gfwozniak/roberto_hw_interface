@@ -164,14 +164,6 @@ void Roberto::write(ros::Duration elapsed_time) {
     ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
 
     // BSCREW WRITES
-    if (ballScrewFalcon.GetSelectedSensorVelocity() < 0)
-    {
-        ballScrewFalcon.ConfigMotionCruiseVelocity(30000);
-    }
-    else
-    {
-        ballScrewFalcon.ConfigMotionCruiseVelocity(15000);
-    }
     ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
     ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
 
