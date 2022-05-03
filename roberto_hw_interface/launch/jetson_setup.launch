@@ -7,7 +7,7 @@
       <param name="wheel_multiplier"    value="1300"/>
   </node>
   
-  <node name="RobertoLimits" pkg="roberto_hw_interface" type="roberto_limit_handler"/>
+  <node name="RobertoLimits" pkg="roberto_hw_interface" type="roberto_limit_handler" output="screen"/>
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
         args="
