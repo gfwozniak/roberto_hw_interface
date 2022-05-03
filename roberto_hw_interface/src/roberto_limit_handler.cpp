@@ -31,6 +31,7 @@ void RobertoLimits::readLimit(const ros::TimerEvent& timer)
     std_msgs::Bool omsg;
     omsg.data = isLimit;
     bscrew_limit_pub->publish(omsg);
+    ROS_INFO("limit being read");
 }
 
 int main(int argc, char** argv)

@@ -26,12 +26,15 @@ if __name__ == '__main__':
     robot_functions = RobertoFunctions()
     joystick = JoystickReader()
 
-    initialPosition = threading.Thread(target=robot_functions.initialMotors())
+    initialPosition = threading.Thread(target=robot_functions.initialMotors)
     initialPosition.start()
 
     joystick.waitUntilX(timeout=100, period=.25)
-    print("x pressed")
-    initialZero = threading.Thread(target=robot_functions.zeroBScrew())
+    print("Initializing motors")
+    initialZero = threading.Thread(target=robot_functions.zeroBScrew)
+    initialPosition.join()
+
+    initialZero.join()
     
     print("finished")
 
