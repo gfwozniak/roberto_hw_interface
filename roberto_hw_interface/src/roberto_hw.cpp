@@ -1,7 +1,8 @@
 #include <roberto_hw_interface/roberto_hw.h>
 
-Roberto::Roberto(ros::NodeHandle& nh) 
+Roberto::Roberto(ros::NodeHandle& nh, ros::Publisher * bscrew_pub) 
     : nh_(nh),
+    bscrew_limit_pub(bscrew_pub),
     rightDriveFalcon(21), // initialize falcons
     leftDriveFalcon(22),
     linearActuatorTalon(31),
@@ -137,6 +138,10 @@ void Roberto::read() {
     auger_joint_position_ = 0;
     auger_joint_velocity_ = augerFalcon.GetSelectedSensorVelocity();
     auger_joint_effort_ = 0;
+
+    std_msgs::Bool omsg;
+    omsg.data = ballScrewFalcon.IsFwdLimitSwitchClosed();
+    bscrew_limit_pub->publish(omsg);
 }
 
 void Roberto::write(ros::Duration elapsed_time) {
@@ -166,12 +171,13 @@ int main(int argc, char** argv)
     //Initialze the ROS node.
     ros::init(argc, argv, "Roberto_hardware_inerface_node");
     ros::NodeHandle nh;
+    auto bscrew_limit_pub = nh.advertise<std_msgs::Bool>("bscrew_limit", 100);
 
     //Separate Spinner thread for the Non-Real time callbacks such as service callbacks to load controllers
     ros::MultiThreadedSpinner spinner(2);
     
     // Create the object of the robot hardware_interface class and spin the thread. 
-    Roberto ROBOT(nh);
+    Roberto ROBOT(nh, &bscrew_limit_pub);
 
     spinner.spin();
     

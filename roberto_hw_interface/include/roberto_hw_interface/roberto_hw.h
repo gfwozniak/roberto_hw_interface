@@ -24,7 +24,7 @@
 class Roberto : public hardware_interface::RobotHW 
 {
     public:
-        Roberto(ros::NodeHandle& nh);
+        Roberto(ros::NodeHandle& nh, ros::Publisher * bscrew_pub);
         ~Roberto();
         void initRosControlJoints(); // Initializes all ros_control joints
         void initPhoenixObjects(); // Configures all falcon motors
@@ -72,6 +72,8 @@ class Roberto : public hardware_interface::RobotHW
         ctre::phoenix::motorcontrol::can::TalonFX ballScrewFalcon;
         ctre::phoenix::motorcontrol::can::TalonFX augerFalcon;
         double wheelMultiplier;
+
+        ros::Publisher * bscrew_limit_pub;
 
         ros::NodeHandle nh_;
         ros::Timer my_control_loop_;
