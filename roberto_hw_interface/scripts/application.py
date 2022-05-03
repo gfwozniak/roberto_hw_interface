@@ -52,6 +52,9 @@ if __name__ == '__main__':
             continue
             #zero auger
         if joystick.Y:
+            thread = threading.Thread(target=robot_functions.deposit)
+            thread.start()
+            robot_functions.delayinput()
             continue
             #deposit
         if joystick.RB:

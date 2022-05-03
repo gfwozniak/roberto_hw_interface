@@ -70,16 +70,37 @@ class RobertoFunctions:
     def returnToNeutral(self):
         self.interrupt()
         print("resetting bscrew")
-        self.robot_api.setBScrewPosition(-10000)
-        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=-100000,bscrew_error=6000)):
+        bscrewposition = -10000
+        self.robot_api.setBScrewPosition(bscrewposition)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=6000)):
             return
         print("resetting actuator")
-        self.robot_api.setActuatorPosition(-10)
-        if(not self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=-10,actuator_error=1)):
+        actuatorposition = -10
+        self.robot_api.setActuatorPosition(actuatorposition)
+        if(not self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=actuatorposition,actuator_error=1)):
             return
         print("in neutral")
         if(not self.waitUntilEvent()):
             return
+    
+    def deposit(self):
+        self.interrupt()
+        print("depositing")
+        bscrewpos1 = -10000
+        self.robot_api.setBScrewPosition(bscrewpos1)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewpos1,bscrew_error=6000)):
+            return
+        print("set bscrew")
+        actuatorposition = 0
+        self.robot_api.setActuatorPosition(actuatorposition)
+        if(not self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=actuatorposition,actuator_error=1)):
+            return
+        print("set actuator")
+        bscrewpos2 = -2000000
+        self.robot_api.setBScrewPosition(bscrewpos2)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewpos2,bscrew_error=6000)):
+            return
+        print("in depositin position")
 
 # Waiting events
     
@@ -137,6 +158,9 @@ class RobertoFunctions:
     def waitUntilBScrewPosition(self, timeout, period, targetpos, bscrew_error):
         mintarget = targetpos - bscrew_error
         maxtarget = targetpos + bscrew_error
+        print(mintarget)
+        print(maxtarget)
+        print(self.robot_api.position[2])
         mustend = time.time() + timeout
         while time.time() < mustend:
             if (self.robot_api.position[2] > mintarget and self.robot_api.position[2] < maxtarget): 
