@@ -88,8 +88,8 @@ void Roberto::initPhoenixObjects()
     bscrewMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonFXFeedbackDevice::IntegratedSensor;
     bscrewMotionMagic.motionCruiseVelocity = 15000;
     bscrewMotionMagic.motionAcceleration = 100000;
-    bscrewMotionMagic.motionCurveStrength = 1;
-    bscrewMotionMagic.slot0.kP = 0.001;
+    bscrewMotionMagic.motionCurveStrength = 0;
+    bscrewMotionMagic.slot0.kP = 0.005;
     bscrewMotionMagic.clearPositionOnLimitF = true;
 //    bscrewMotionMagic.slot0.kI = 0.0002;
 //    bscrewMotionMagic.slot0.maxIntegralAccumulator = 50000;
@@ -98,9 +98,9 @@ void Roberto::initPhoenixObjects()
     TalonSRXConfiguration actuatorMotionMagic;
     actuatorMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonSRXFeedbackDevice::Analog;
     actuatorMotionMagic.motionCruiseVelocity = 1;
-    actuatorMotionMagic.motionAcceleration = 100;
+    actuatorMotionMagic.motionAcceleration = 0.5;
     actuatorMotionMagic.motionCurveStrength = 4;
-    actuatorMotionMagic.slot0.kP = 50;
+    actuatorMotionMagic.slot0.kP = 30;
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 
     ros::param::get("~wheel_multiplier", wheelMultiplier);
@@ -158,7 +158,17 @@ void Roberto::write(ros::Duration elapsed_time) {
     leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));
 
     // ACTUATOR WRITES
-    linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
+    double max = actuator_joint_position_command_ + 1;
+    double min = actuator_joint_position_command_ - 1;
+    double pos = linearActuatorTalon.GetSelectedSensorPosition();
+    if ( pos < max && pos > min )
+    {
+        linearActuatorTalon.Set(ControlMode::PercentOutput, 0);
+    }
+    else
+    {
+        linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
+    }
     ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
 
     // BSCREW WRITES

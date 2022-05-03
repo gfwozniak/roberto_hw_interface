@@ -66,7 +66,7 @@ class RobertoFunctions:
         self.interrupt()
         print("resetting bscrew")
         self.robot_api.setBScrewPosition(-10000)
-        self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=-10000,bscrew_error=1000)
+        self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=-100000,bscrew_error=6000)
         print("resetting actuator")
         self.robot_api.setActuatorPosition(-10)
         self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=-10,actuator_error=1)
