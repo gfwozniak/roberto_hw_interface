@@ -28,7 +28,7 @@ Roberto::~Roberto() {
 
 void Roberto::initRosControlJoints() {
         
-//// LINEAR ACTUATOR JOINT
+// LINEAR ACTUATOR JOINT
     hardware_interface::JointStateHandle jointStateHandleActuator("actuator_joint", &actuator_joint_position_, &actuator_joint_velocity_, &actuator_joint_effort_);
     joint_state_interface_.registerHandle(jointStateHandleActuator);
     hardware_interface::JointHandle jointPositionHandleActuator(jointStateHandleActuator, &actuator_joint_position_command_);
