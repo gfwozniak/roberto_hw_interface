@@ -1,10 +1,9 @@
 #include <roberto_hw_interface/roberto_limit_handler.h>
 
-RobertoLimits::RobertoLimits(ros::Publisher * actuator_pub, ros::Publisher * bscrew_pub) 
+RobertoLimits::RobertoLimits(ros::Publisher * bscrew_pub) 
     : linearActuatorTalon(31),
     ballScrewFalcon(32),
-    bscrew_limit_pub(bscrew_pub),
-    actuator_limit_pub(actuator_pub)
+    bscrew_limit_pub(bscrew_pub)
 {
 }
 
@@ -41,8 +40,7 @@ int main(int argc, char** argv)
     ros::MultiThreadedSpinner spinner(2);
 
     auto bscrew_limit_pub = nh.advertise<std_msgs::Bool>("bscrew_limit", 100);
-    auto actuator_limit_pub = nh.advertise<std_msgs::Bool>("actuator_limit", 100);
-    RobertoLimits ROBOT(&bscrew_limit_pub, &actuator_limit_pub);
+    RobertoLimits ROBOT(&bscrew_limit_pub);
 
     ros::ServiceServer zeroBScrewService = nh.advertiseService("zero_bscrew", &RobertoLimits::zeroBScrew, &ROBOT);
     ros::ServiceServer zeroActuatorService = nh.advertiseService("zero_actuator", &RobertoLimits::zeroActuator, &ROBOT);
@@ -50,7 +48,7 @@ int main(int argc, char** argv)
 
     ros::Subscriber feed = nh.subscribe("joint_states", 1000, &RobertoLimits::enableFeed, &ROBOT);
 
-    ros::Timer timer = nh.createTimer(ros::Duration(0.1), std::bind(&RobertoLimits::readLimit, &ROBOT));
+    ros::Timer timer = nh.createTimer(ros::Duration(0.1), &RobertoLimits::readLimit, &ROBOT);
 
     spinner.spin();
     

@@ -17,7 +17,7 @@
 class RobertoLimits
 {
     public:
-        RobertoLimits(ros::Publisher * actuator_pub, ros::Publisher * bscrew_pub);
+        RobertoLimits(ros::Publisher * bscrew_pub);
         bool zeroBScrew(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
         bool zeroActuator(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
         void enableFeed(const sensor_msgs::JointState::ConstPtr& imsg);
@@ -28,5 +28,4 @@ class RobertoLimits
         ctre::phoenix::motorcontrol::can::TalonFX ballScrewFalcon;
 
         ros::Publisher * bscrew_limit_pub;
-        ros::Publisher * actuator_limit_pub;
 };
