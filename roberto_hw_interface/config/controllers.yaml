@@ -24,6 +24,10 @@ Roberto:
       type: velocity_controllers/JointVelocityController
       joint: auger_joint
 
+    limit_switch:
+      type: velocity_controllers/JointVelocityController
+      joint: limit_switch
+
 #    left_wheel_controller:
 #      type: velocity_controllers/JointVelocityController
 #      joint: wheel_joint_0

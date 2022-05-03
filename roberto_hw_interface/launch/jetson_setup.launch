@@ -15,6 +15,7 @@
             /Roberto/auger_controller
             /Roberto/actuator_pos_controller
             /Roberto/bscrew_pos_controller
+            /Roberto/limit_switch
             /Roberto/drivetrain_controller"> 
   </node>
 <!--  

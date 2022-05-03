@@ -46,6 +46,11 @@ void Roberto::initRosControlJoints() {
     hardware_interface::JointHandle jointVelocityHandleAuger(jointStateHandleAuger, &auger_joint_velocity_command_);
     velocity_joint_interface_.registerHandle(jointVelocityHandleAuger);
 
+// FAKE LIMIT SWITCH JOINT
+    hardware_interface::JointStateHandle jointStateHandleLimitSwitch("limit_switch", &limit_switch_position_, &limit_switch_velocity_, &limit_switch_effort_);
+    joint_state_interface_.registerHandle(jointStateHandleLimitSwitch);
+    hardware_interface::JointHandle jointVelocityHandleLimitSwitch(jointStateHandleLimitSwitch, &limit_switch_zero_);
+    velocity_joint_interface_.registerHandle(jointVelocityHandleLimitSwitch);
 
 // WHEEL JOINTS 
 	for(int i=0; i<2; i++)
@@ -138,6 +143,11 @@ void Roberto::read() {
     auger_joint_velocity_ = augerFalcon.GetSelectedSensorVelocity();
     auger_joint_effort_ = 0;
 
+    // LIMIT READS
+    limit_switch_position_ = ballScrewFalcon.IsFwdLimitSwitchClosed();
+    limit_switch_velocity_ = 0;
+    limit_switch_effort_ = 100;
+
 }
 
 void Roberto::write(ros::Duration elapsed_time) {
@@ -156,9 +166,15 @@ void Roberto::write(ros::Duration elapsed_time) {
     // BSCREW WRITES
     ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
     ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
-//
-//    // AUGER WRITES
-//    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
+
+    // AUGER WRITES
+    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
+
+    // LIMITS
+    if (limit_switch_zero_ > 1)
+    {
+        linearActuatorTalon.SetSelectedSensorPosition(0);
+    }
 }
 
 int main(int argc, char** argv)

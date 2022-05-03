@@ -66,6 +66,13 @@ class Roberto : public hardware_interface::RobotHW
         double wheel_joint_effort_[2];
         double wheel_joint_velocity_command_[2];
         
+        // Limit switch
+        double limit_switch_position_;
+        double limit_switch_velocity_;
+        double limit_switch_effort_;
+        double limit_switch_zero_;
+
+
         ctre::phoenix::motorcontrol::can::TalonFX rightDriveFalcon;
         ctre::phoenix::motorcontrol::can::TalonFX leftDriveFalcon;
         ctre::phoenix::motorcontrol::can::TalonSRX linearActuatorTalon;
