@@ -78,7 +78,6 @@ class RobertoAPI:
 
     def _limit_switch_callback(self, message):
         self.limit_switch_position = message.data
-        print(self.limit_switch_position)
 
 #
 # OPERATION METHODS
@@ -142,7 +141,7 @@ class JoystickReader:
         return (RT - LT)
     
     def _joystick_callback(self, message):
-        self.linearx = self.combineLTRT(message)
+        self.linearx = self._combineLTRT(message)
         self.angularz = message.axes[0]
         self.A = message.buttons[0]
         self.B = message.buttons[1]

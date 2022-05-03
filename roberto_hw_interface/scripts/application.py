@@ -5,6 +5,7 @@ from robot_api import RobertoAPI
 from robot_api import JoystickReader
 import threading
 import time
+import rospy
 
 class Interrupter:
 
@@ -21,7 +22,7 @@ class Interrupter:
 
 
 if __name__ == '__main__':
-
+    rospy.init_node('Joy2RobotControl')
     robot_functions = RobertoFunctions()
     joystick = JoystickReader()
 
@@ -29,6 +30,7 @@ if __name__ == '__main__':
     initialPosition.start()
 
     joystick.waitUntilX(timeout=100, period=.25)
+    print("x pressed")
     initialZero = threading.Thread(target=robot_functions.zeroAuger())
     
     print("finished")

@@ -18,11 +18,13 @@ class RobertoFunctions:
             time.sleep(.25)
 
     def initialMotors(self):
+        print("start initial motors")
         self.robot_api.setAugerVelocity(0.0)
         self.robot_api.setDrivetrainVelocity(0.0, 0.0)
         self.robot_api.setBScrewPosition(self.robot_api.position[3])
         self.robot_api.setActuatorPosition(self.robot_api.position[1])
         self.waitUntilEvent
+        print("end initial motors")
 
     def stopMotors(self):
         self.interrupt()
@@ -32,10 +34,14 @@ class RobertoFunctions:
         self.robot_api.setActuatorPosition(self.robot_api.position[1])
         self.waitUntilEvent
 
-    def zeroAuger(self):
+    def zeroBScrew(self):
+        print("start zeroBscrew")
         self.interrupt()
         self.robot_api.setBScrewPosition(8000000)
         self.waitUntilLimit()
+        self.robot_api.setBScrewPosition(0)
+        self.waitUntilEvent
+        print("end zeroBscrew")
 
 #    def waitUntilActuatorPosition(self, timeout, period, targetpos):
 #        mintarget = targetpos - self._actuator_error

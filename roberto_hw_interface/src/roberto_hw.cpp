@@ -147,7 +147,6 @@ void Roberto::write(ros::Duration elapsed_time) {
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
     rightDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
     leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));
-    ROS_INFO("Value: %.2f", (wheel_joint_velocity_command_[0]* wheelMultiplier));
 //
 //    // ACTUATOR WRITES
 //    double actuator_corrected;
@@ -160,9 +159,8 @@ void Roberto::write(ros::Duration elapsed_time) {
 //    linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
 //    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
 //
-//    // BSCREW WRITES
-//    ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
-//    ROS_INFO("%%Out Cmd: %.2f",bscrew_joint_position_command_);
+    // BSCREW WRITES
+    ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
 //
 //    // AUGER WRITES
 //    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
