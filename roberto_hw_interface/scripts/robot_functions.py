@@ -52,6 +52,7 @@ class RobertoFunctions:
         self.robot_api.setActuatorPosition(10000)
         time.sleep(10)
         self.robot_api.zeroActuator()
+        self.robot_api.setActuatorPosition(0)
         self.waitUntilEvent()
 
 #    def waitUntilActuatorPosition(self, timeout, period, targetpos):

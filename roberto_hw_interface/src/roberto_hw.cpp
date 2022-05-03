@@ -147,18 +147,11 @@ void Roberto::write(ros::Duration elapsed_time) {
     ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
     rightDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
     leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));
-//
-//    // ACTUATOR WRITES
-//    double actuator_corrected;
-//    if (actuator_joint_position_command_ < 940)
-//        actuator_corrected = 940;
-//    else if (actuator_joint_position_command_ > 1020)
-//        actuator_corrected = 1020;
-//    else
-//        actuator_corrected = actuator_joint_position_command_;
-//    linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
-//    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
-//
+
+    // ACTUATOR WRITES
+    linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
+    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
+
     // BSCREW WRITES
     ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
 //

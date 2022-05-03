@@ -29,7 +29,9 @@ class RobertoAPI:
         self._auger_run_cmd_ = 0.0
 
         # INITIALIZE SERVICE CALLS
+        rospy.wait_for_service('zero_bscrew')
         self.zeroBScrew = rospy.ServiceProxy('zero_bscrew', Empty)
+        rospy.wait_for_service('zero_actuator')
         self.zeroActuator = rospy.ServiceProxy('zero_actuator', Empty)
 
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
