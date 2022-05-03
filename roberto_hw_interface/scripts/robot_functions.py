@@ -77,7 +77,6 @@ class RobertoFunctions:
     def waitUntilEvent(self):
         while True:
             if (self.e.is_set()):
-                print(self.e.is_set())
                 self.e.clear()
                 break
             time.sleep(.5)

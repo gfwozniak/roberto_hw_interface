@@ -32,6 +32,7 @@ if __name__ == '__main__':
     joystick.waitUntilX(timeout=100, period=.25)
     print("Initializing motors")
     initialZero = threading.Thread(target=robot_functions.zeroBScrew)
+    initialZero.start()
     initialPosition.join()
 
     initialZero.join()
