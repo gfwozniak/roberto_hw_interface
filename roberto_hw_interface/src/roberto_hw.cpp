@@ -97,7 +97,7 @@ void Roberto::initPhoenixObjects()
 
     TalonSRXConfiguration actuatorMotionMagic;
     actuatorMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonSRXFeedbackDevice::Analog;
-    actuatorMotionMagic.motionCruiseVelocity = 1;
+    actuatorMotionMagic.motionCruiseVelocity = 2;
     actuatorMotionMagic.motionAcceleration = 5;
     actuatorMotionMagic.motionCurveStrength = 0;
     actuatorMotionMagic.slot0.kP = 30;

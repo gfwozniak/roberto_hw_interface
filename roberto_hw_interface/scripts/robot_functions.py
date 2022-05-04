@@ -36,10 +36,13 @@ class RobertoFunctions:
         self.stopMotors()
 
     def delayinput(self):
+        print("start delay")
+        time.sleep(0.1)
         while True:
             if(not self.e.is_set()):
                 break
         time.sleep(0.1)
+        print("end delay")
 
     def initialMotors(self):
         if(not self.waitUntilJointStatePublish()):
@@ -238,6 +241,8 @@ class RobertoFunctions:
 # Waiting events
     
     def waitUntilLimit(self):
+        print("BEFORE")
+        print(self.e.is_set())
         mustend = time.time() + 60
         while time.time() < mustend:
             if (self.robot_api.limit_switch_position): 

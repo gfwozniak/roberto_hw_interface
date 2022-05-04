@@ -12,7 +12,6 @@ class Application:
         self.joystick = JoystickReader()
         
     def execute(self):
-        rospy.init_node('Joy2RobotControl')
         init_thread = threading.Thread(target=self.robot_functions.initialMotors)
         init_thread.start()
 
@@ -26,7 +25,7 @@ class Application:
 
         rospy.Timer(rospy.Duration(0.05), self.driveLoop)
 
-        while not rospy.is_shutdown:
+        while True:
             if self.joystick.XBOX: # zero auger with XBOX
                 print("zero auger called")
                 thread = threading.Thread(target=self.robot_functions.zeroAuger)
@@ -36,6 +35,7 @@ class Application:
                 continue
 
             if self.joystick.A: # stop motors with A
+                print('a')
                 thread = threading.Thread(target=self.robot_functions.noMotorCommand)
                 thread.start()
                 self.robot_functions.delayinput()
@@ -60,11 +60,12 @@ class Application:
 
             time.sleep(0.1)
 
-    def driveLoop(self):
-        self.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.5
-        self.robot_api._drivetrain_angular_z_cmd_ = self.joystick.angularz * 0.5
+    def driveLoop(self, event):
+        self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.5
+        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = self.joystick.angularz * 0.5
 
 if __name__ == '__main__':
+    rospy.init_node('Joy2RobotControl')
     application = Application()
     application.execute()
 
