@@ -25,6 +25,7 @@ class RobertoFunctions:
         while True:
             if(not self.e.is_set()):
                 break
+        time.sleep(0.1)
 
     def initialMotors(self):
         if(not self.waitUntilJointStatePublish()):
@@ -127,7 +128,7 @@ class RobertoFunctions:
         print("operation")
         self.robot_api.setActuatorPosition(actuatorposition)
         print("before awaits")
-        if(not self.waitUntilActuatorPosition(timeout=30,period=0.05,targetpos=actuatorposition,actuator_error=1)):
+        if(not self.waitUntilActuatorPosition(timeout=30,period=0.05,targetpos=actuatorposition,actuator_error=3)):
             print("early exit")
             return
         print("awaiting next input")
