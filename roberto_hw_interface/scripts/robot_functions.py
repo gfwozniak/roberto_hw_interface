@@ -304,7 +304,7 @@ class RobertoFunctions:
             time.sleep(period)
         print("timeout")
         return True
-    
+
 #    def __init__(self):
 #        self.augerapi = RobertoAPI()
 #        self.isRunning = False

@@ -59,17 +59,16 @@ class RobertoAPI:
         # [4] wheel 0
         # [5] wheel 1
 
-    def controlLoop(self, message):
-        while not rospy.is_shutdown():
-            self._auger_publisher.publish(Float64(self._auger_run_cmd_))
-            self._bscrew_publisher.publish(Float64(self._bscrew_position_cmd_))
-            self._actuator_publisher.publish(Float64(self._actuator_position_cmd_))
-            self._limit_publisher.publish(Float64(self._limit_position_cmd_))
-            twist = Twist()
-            twist.linear.x = (self._drivetrain_linear_x_cmd_)
-            twist.angular.z = (self._drivetrain_angular_z_cmd_)
-            self._drivetrain_publisher.publish(twist)
-            self._rate.sleep()
+    def controlLoop(self, event):
+        self._auger_publisher.publish(Float64(self._auger_run_cmd_))
+        self._bscrew_publisher.publish(Float64(self._bscrew_position_cmd_))
+        self._actuator_publisher.publish(Float64(self._actuator_position_cmd_))
+        self._limit_publisher.publish(Float64(self._limit_position_cmd_))
+        twist = Twist()
+        twist.linear.x = (self._drivetrain_linear_x_cmd_)
+        twist.angular.z = (self._drivetrain_angular_z_cmd_)
+        self._drivetrain_publisher.publish(twist)
+        self._rate.sleep()
 #
 # CALLBACK METHODS for SUBSCRIBERS
 #
