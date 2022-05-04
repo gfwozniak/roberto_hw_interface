@@ -32,9 +32,11 @@ if __name__ == '__main__':
     print("waiting for x")
     joystick.waitUntilX(timeout=100, period=.1)
     print("x pressed")
+    print("zero auger called")
     zero_thread = threading.Thread(target=robot_functions.zeroAuger)
     zero_thread.start()
     robot_functions.delayinput()
+    print("delay input passed!")
 
     while True:
         if joystick.A:
@@ -42,31 +44,42 @@ if __name__ == '__main__':
             thread.start()
             robot_functions.delayinput()
             #stop motors
-        if joystick.B:
-            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-2000000,))
+        if joystick.B:#out
+#            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-2000000,))
+#            thread.start()
+#            robot_functions.delayinput()
+            thread = threading.Thread(target=robot_functions.moveActuator, args=(-50,))
             thread.start()
             robot_functions.delayinput()
             continue
             #j
         if joystick.X:
+            print("zero auger called")
             thread = threading.Thread(target=robot_functions.zeroAuger)
             thread.start()
             robot_functions.delayinput()
+            print("delay input passed!")
             continue
             #zero auger
-        if joystick.Y:
-            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-10000,))
+        if joystick.Y:#in
+#            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-10000,))
+#            thread.start()
+#            robot_functions.delayinput()
+            thread = threading.Thread(target=robot_functions.moveActuator, args=(0,))
             thread.start()
             robot_functions.delayinput()
+            continue
             continue
             #deposit
         if joystick.RB:
-            thread = threading.Thread(target=robot_functions.returnToNeutral)
+            thread = threading.Thread(target=robot_functions.moveAuger, args=(.5, 5))
             thread.start()
             robot_functions.delayinput()
-            #return to driving position
+            continue
         if joystick.LB:
-            break
+            thread = threading.Thread(target=robot_functions.moveAuger, args=(-.5, 5))
+            thread.start()
+            robot_functions.delayinput()
             continue
             #return to driving position
         time.sleep(0.1)

@@ -143,7 +143,7 @@ void Roberto::read() {
 
     // LIMIT READS
     limit_switch_position_ = ballScrewFalcon.IsFwdLimitSwitchClosed();
-    ballScrewFalcon.ConfigClearPositionOnLimitF(false, 2000);
+//    ballScrewFalcon.ConfigClearPositionOnLimitF(false, 2000);
     limit_switch_velocity_ = 0;
     limit_switch_effort_ = 100;
 
@@ -174,6 +174,10 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     // BSCREW WRITES
     ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
+    if (ballScrewFalcon.IsFwdLimitSwitchClosed())
+    {
+        ballScrewFalcon.Set(ControlMode::PercentOutput, -.9);
+    }
     ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
 
     // AUGER WRITES
