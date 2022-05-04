@@ -131,6 +131,11 @@ class JoystickReader:
         self.X = False
         self.LB = False
         self.RB = False
+        self.SQUARE = False
+        self.LINES = False
+        self.XBOX = False
+        self.LTHUMB = False
+        self.RTHUMB = False
         rospy.Subscriber("joy", Joy, self._joystick_callback)
         
     def _combineLTRT(self, message):
@@ -147,11 +152,16 @@ class JoystickReader:
         self.Y = message.buttons[3]
         self.LB = message.buttons[4]
         self.RB = message.buttons[5]
+        self.SQUARE = message.buttons[6]
+        self.LINES = message.buttons[7]
+        self.XBOX = message.buttons[8]
+        self.LTHUMB = message.buttons[9]
+        self.RTHUMB = message.buttons[10]
 
-    def waitUntilX(self, timeout, period):
+    def waitUntilXBOX(self, timeout, period):
         mustend = time.time() + timeout
         while time.time() < mustend:
-            if self.X: 
+            if self.XBOX: 
                 return True
             time.sleep(period)
         return False

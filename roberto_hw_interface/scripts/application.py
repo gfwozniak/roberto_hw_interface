@@ -19,8 +19,6 @@ class Interrupter:
                 break
             time.sleep(.25)
 
-
-
 if __name__ == '__main__':
     rospy.init_node('Joy2RobotControl')
     robot_functions = RobertoFunctions()
@@ -29,59 +27,52 @@ if __name__ == '__main__':
     init_thread = threading.Thread(target=robot_functions.initialMotors)
     init_thread.start()
 
-    print("waiting for x")
-    joystick.waitUntilX(timeout=100, period=.1)
-    print("x pressed")
+    print("waiting for xbox")
+    joystick.waitUntilXBOX(timeout=100, period=.1)
+    print("xbox pressed")
     print("zero auger called")
     zero_thread = threading.Thread(target=robot_functions.zeroAuger)
     zero_thread.start()
     robot_functions.delayinput()
-    print("delay input passed!")
 
     while True:
-        if joystick.A:
-            thread = threading.Thread(target=robot_functions.noMotorCommand)
-            thread.start()
-            robot_functions.delayinput()
-            #stop motors
-        if joystick.B:#out
-#            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-2000000,))
-#            thread.start()
-#            robot_functions.delayinput()
-            thread = threading.Thread(target=robot_functions.moveActuator, args=(-50,))
-            thread.start()
-            robot_functions.delayinput()
-            continue
-            #j
-        if joystick.X:
+        if joystick.XBOX: # zero auger with XBOX
             print("zero auger called")
             thread = threading.Thread(target=robot_functions.zeroAuger)
             thread.start()
             robot_functions.delayinput()
             print("delay input passed!")
             continue
-            #zero auger
-        if joystick.Y:#in
-#            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-10000,))
-#            thread.start()
-#            robot_functions.delayinput()
-            thread = threading.Thread(target=robot_functions.moveActuator, args=(0,))
+
+        if joystick.A: # stop motors with A
+            thread = threading.Thread(target=robot_functions.noMotorCommand)
+            thread.start()
+            robot_functions.delayinput()
+
+        if joystick.B: # neutral position with B
+            thread = threading.Thread(target=robot_functions.neutralPosition)
             thread.start()
             robot_functions.delayinput()
             continue
+
+        if joystick.X: # mine with X
+            thread = threading.Thread(target=robot_functions.mine)
+            thread.start()
+            robot_functions.delayinput()
             continue
-            #deposit
+
+        if joystick.Y: # deposit with Y
+            thread = threading.Thread(target=robot_functions.deposit)
+            thread.start()
+            robot_functions.delayinput()
+            continue
+
         if joystick.RB:
-            thread = threading.Thread(target=robot_functions.moveAuger, args=(.5, 5))
-            thread.start()
-            robot_functions.delayinput()
             continue
+
         if joystick.LB:
-            thread = threading.Thread(target=robot_functions.moveAuger, args=(-.5, 5))
-            thread.start()
-            robot_functions.delayinput()
             continue
-            #return to driving position
+
         time.sleep(0.1)
     
     robot_functions.e.set()
@@ -89,7 +80,17 @@ if __name__ == '__main__':
 
     exit()
 
-    #hold all motors await input to zero actuator and bscrew
+    # MOVE BSCREW
+#            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-10000,))
+#            thread.start()
+#            robot_functions.delayinput()
 
-    #then all functions open up
+    # MOVE ACTUATOR
+#            thread = threading.Thread(target=robot_functions.moveActuator, args=(-5,))
+#            thread.start()
+#            robot_functions.delayinput()
 
+    # MOVE AUGER
+#            thread = threading.Thread(target=robot_functions.moveAuger, args=(.5, 5))
+#            thread.start()
+#            robot_functions.delayinput()

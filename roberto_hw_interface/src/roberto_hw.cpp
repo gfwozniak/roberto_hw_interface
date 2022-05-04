@@ -152,17 +152,30 @@ void Roberto::read() {
 void Roberto::write(ros::Duration elapsed_time) {
 //    debugging 
 //    ROS_INFO("Value: %.2f", variable);
+    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
+
+    double apos = linearActuatorTalon.GetSelectedSensorPosition();
+    double bpos = ballScrewFalcon.GetSelectedSensorPosition();
+    bool is_actuator_neutral = (apos > -20);
+    bool is_bscrew_neutral = (bpos > -20000);
+    bool is_actuator_mine = (apos < -70);
 
     // WHEEL WRITES
-    ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
-    rightDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
-    leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));
+    if (is_actuator_neutral && is_bscrew_neutral)
+    {
+        rightDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
+        leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));
+    }
+    else
+    {
+        rightDriveFalcon.Set(ControlMode::PercentOutput, 0);
+        leftDriveFalcon.Set(ControlMode::PercentOutput, 0);
+    }
 
     // ACTUATOR WRITES
-    double max = actuator_joint_position_command_ + 1;
-    double min = actuator_joint_position_command_ - 1;
-    double pos = linearActuatorTalon.GetSelectedSensorPosition();
-    if ( pos < max && pos > min )
+    double amax = actuator_joint_position_command_ + 1;
+    double amin = actuator_joint_position_command_ - 1;
+    if (apos < amax && apos > amin)
     {
         linearActuatorTalon.Set(ControlMode::PercentOutput, 0);
     }

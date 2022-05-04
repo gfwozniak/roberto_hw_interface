@@ -10,6 +10,20 @@ class RobertoFunctions:
         self.robot_api = RobertoAPI()
         self.e = threading.Event()
 
+    # positional variables
+        self.neutralbscrew = -10000
+        self.neutralactuator = -5
+        self.depositbscrew = -2000000
+        self.depositactuator = 0
+        self.minebscrew = -7000000
+        self.mineactuator = -80
+        self.raugerspeed = -.9
+        self.faugerspeed = .9
+        self.depositduration = 10
+
+        self.bscrew_error = 50000
+        self.actuator_error = 3
+
     def interrupt(self):
         self.e.set()
         print('call interrupt')
@@ -145,8 +159,81 @@ class RobertoFunctions:
         self.robot_api.setAugerVelocity(0)
         if(not self.waitUntilEvent()):
             return
-
-
+    
+    def neutralPosition(self):
+        self.interrupt()
+        # MOVE BSCREW TO NEUTRAL
+        self.robot_api.setBScrewPosition(self.neutralbscrew)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+            return
+        # MOVE ACTUATOR TO NEUTRAL
+        self.robot_api.setActuatorPosition(self.neutralactuator)
+        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.neutralactuator,actuator_error=self.actuator_error)):
+            return
+        # AWAIT
+        if(not self.waitUntilEvent()):
+            return
+    
+    def deposit(self):
+        self.interrupt()
+        # MOVE BSCREW TO NEUTRAL
+        self.robot_api.setBScrewPosition(self.neutralbscrew)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+            return
+        # MOVE ACTUATOR TO DEPOSIT
+        self.robot_api.setActuatorPosition(self.depositactuator)
+        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.depositactuator,actuator_error=self.actuator_error)):
+            return
+        # MOVE BSCREW TO DEPOSIT
+        self.robot_api.setBScrewPosition(self.depositbscrew)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.depositbscrew,bscrew_error=self.bscrew_error)):
+            return
+        # REVERSE AUGER FOR 10 SECONDS
+        self.robot_api.setAugerVelocity(self.raugerspeed)
+        if(not self.waitUntilTime(seconds=self.depositduration)):
+            self.robot_api.setAugerVelocity(0)
+            return
+        self.robot_api.setAugerVelocity(0)
+        # MOVE BSCREW TO NEUTRAL
+        self.robot_api.setBScrewPosition(self.neutralbscrew)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+            return
+        # MOVE ACTUATOR TO NEUTRAL
+        self.robot_api.setActuatorPosition(self.neutralactuator)
+        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.neutralactuator,actuator_error=self.actuator_error)):
+            return
+        # AWAIT
+        if(not self.waitUntilEvent()):
+            return
+    
+    def mine(self):
+        self.interrupt()
+        # MOVE BSCREW TO NEUTRAL
+        self.robot_api.setBScrewPosition(self.neutralbscrew)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+            return
+        # MOVE ACTUATOR TO MINE
+        self.robot_api.setActuatorPosition(self.mineactuator)
+        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.mineactuator,actuator_error=self.actuator_error)):
+            return
+        # MOVE BSCREW TO MINE AND SPIN AUGER
+        self.robot_api.setBScrewPosition(self.minebscrew)
+        self.robot_api.setAugerVelocity(self.faugerspeed)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.minebscrew,bscrew_error=self.bscrew_error)):
+            self.robot_api.setAugerVelocity(0)
+            return
+        self.robot_api.setAugerVelocity(0)
+        # MOVE BSCREW TO NEUTRAL
+        self.robot_api.setBScrewPosition(self.neutralbscrew)
+        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+            return
+        # MOVE ACTUATOR TO NEUTRAL
+        self.robot_api.setActuatorPosition(self.neutralactuator)
+        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.neutralactuator,actuator_error=self.actuator_error)):
+            return
+        # AWAIT
+        if(not self.waitUntilEvent()):
+            return
 
 # Waiting events
     
