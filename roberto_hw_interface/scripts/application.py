@@ -55,7 +55,7 @@ if __name__ == '__main__':
             continue
             #zero auger
         if joystick.Y:
-            thread = threading.Thread(target=robot_functions.deposit)
+            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-10000,))
             thread.start()
             robot_functions.delayinput()
             continue
