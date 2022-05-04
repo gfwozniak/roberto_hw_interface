@@ -50,6 +50,7 @@ class RobertoFunctions:
         if(not self.waitUntilEvent()):
             return
 
+# good
     def zeroAuger(self):
         self.interrupt()
         print("zero b screw")
@@ -101,6 +102,15 @@ class RobertoFunctions:
         if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewpos2,bscrew_error=6000)):
             return
         print("in depositin position")
+
+    def moveBScrew(self, bscrewposition):
+        self.interrupt()
+        print("moving bscrew")
+        self.robot_api.setBScrewPosition(bscrewposition)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=6000)):
+            return
+
+
 
 # Waiting events
     

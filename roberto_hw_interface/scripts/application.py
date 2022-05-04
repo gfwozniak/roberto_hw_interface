@@ -43,6 +43,9 @@ if __name__ == '__main__':
             robot_functions.delayinput()
             #stop motors
         if joystick.B:
+            thread = threading.Thread(target=robot_functions.moveBScrew, args=(-2000000,))
+            thread.start()
+            robot_functions.delayinput()
             continue
             #j
         if joystick.X:
