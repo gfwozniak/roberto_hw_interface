@@ -58,7 +58,12 @@ class Application:
                 self.robot_functions.delayinput()
                 continue
 
+            if self.joystick.SQUARE:
+                break
+
             time.sleep(0.1)
+        
+        self.robot_functions.e.set()
 
     def driveLoop(self, event):
         self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.5
