@@ -104,6 +104,7 @@ void Roberto::initPhoenixObjects()
     linearActuatorTalon.ConfigAllSettings(actuatorMotionMagic);
 
     ros::param::get("~wheel_multiplier", wheelMultiplier);
+    ros::param::get("~current_threshold", currentThreshold);
 }
 
 
@@ -194,7 +195,15 @@ void Roberto::write(ros::Duration elapsed_time) {
     ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
 
     // AUGER WRITES
-    augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
+    double current = augerFalcon.GetStatorCurrent();
+    if (current < currentThreshold)
+    {
+        augerFalcon.Set(ControlMode::PercentOutput, auger_joint_velocity_command_);
+    }
+    else
+    {
+        augerFalcon.Set(ControlMode::PercentOutput, (-0.8 * auger_joint_velocity_command_));
+    }
 
     // LIMITS
     if (limit_switch_zero_ > 1)
