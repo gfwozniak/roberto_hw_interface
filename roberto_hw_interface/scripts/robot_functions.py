@@ -65,7 +65,7 @@ class RobertoFunctions:
         self.robot_api.setBScrewPosition(-10000)
         print("zero actuator")
         self.robot_api.setActuatorPosition(10000)
-        if(not self.waitUntilTime(5)):
+        if(not self.waitUntilTime(15)):
             print("zero auger exit!")
             return
         self.robot_api.zeroActuator()
@@ -124,10 +124,15 @@ class RobertoFunctions:
 
     def moveActuator(self, actuatorposition):
         self.interrupt()
+        print("operation")
         self.robot_api.setActuatorPosition(actuatorposition)
+        print("before awaits")
         if(not self.waitUntilActuatorPosition(timeout=30,period=0.05,targetpos=actuatorposition,actuator_error=1)):
+            print("early exit")
             return
+        print("awaiting next input")
         if(not self.waitUntilEvent()):
+            print("standard exit")
             return
 
     def moveAuger(self, augervelocity, time):
@@ -154,7 +159,7 @@ class RobertoFunctions:
                 print("interrupt called and cleared")
                 return False
             time.sleep(.05)
-        return False
+        return True
 
     def waitUntilJointStatePublish(self):
         mustend = time.time() + 60
@@ -171,8 +176,6 @@ class RobertoFunctions:
         while True:
             if (self.e.is_set()):
                 self.e.clear()
-                print(self.e.is_set())
-                print("exit")
                 return False
             time.sleep(.05)
 
@@ -196,7 +199,7 @@ class RobertoFunctions:
                 self.e.clear()
                 return False
             time.sleep(period)
-        return False
+        return True
 
     def waitUntilBScrewPosition(self, timeout, period, targetpos, bscrew_error):
         mintarget = targetpos - bscrew_error
@@ -212,7 +215,7 @@ class RobertoFunctions:
                 return False
             time.sleep(period)
         print("timeout")
-        return False
+        return True
     
 #    def __init__(self):
 #        self.augerapi = RobertoAPI()
