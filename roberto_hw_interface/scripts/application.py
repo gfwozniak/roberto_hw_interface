@@ -62,7 +62,7 @@ class Application:
 
     def driveLoop(self, event):
         self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.5
-        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = self.joystick.angularz * 0.5
+        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.5
 
 if __name__ == '__main__':
     rospy.init_node('Joy2RobotControl')
