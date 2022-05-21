@@ -225,8 +225,8 @@ class RobertoFunctions:
         if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.minebscrew,bscrew_error=self.bscrew_error)):
             self.robot_api.setAugerVelocity(0)
             return
-        self.robot_api.setAugerVelocity(0)
         # MOVE BSCREW TO NEUTRAL
+        self.robot_api.setAugerVelocity(0)
         self.robot_api.setBScrewPosition(self.neutralbscrew)
         if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
             return

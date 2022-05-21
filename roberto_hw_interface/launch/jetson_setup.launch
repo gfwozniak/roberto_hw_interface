@@ -19,6 +19,8 @@
             /Roberto/limit_switch
             /Roberto/drivetrain_controller"> 
   </node>
+
+  <node name="Telemetry" pkg="roberto_hw_interface" type="telemetry_republisher"/>
 <!--  
     <node name="DiffDrive" pkg="roberto_hw_interface" type="diff_drive">
       <param name="totalMod" value="1"/>

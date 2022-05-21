@@ -135,12 +135,12 @@ void Roberto::read() {
     // ACTUATOR READS
     actuator_joint_position_ = linearActuatorTalon.GetSelectedSensorPosition();
     actuator_joint_velocity_ = linearActuatorTalon.GetSelectedSensorVelocity();
-    actuator_joint_effort_ = 0;
+    actuator_joint_effort_ = linearActuatorTalon.GetBusVoltage();
 
     // AUGER READS
-    auger_joint_position_ = 0;
+    auger_joint_position_ = augerFalcon.GetSupplyCurrent();
     auger_joint_velocity_ = augerFalcon.GetSelectedSensorVelocity();
-    auger_joint_effort_ = 0;
+    auger_joint_effort_ = augerFalcon.GetTemperature();
 
     // LIMIT READS
     limit_switch_position_ = ballScrewFalcon.IsFwdLimitSwitchClosed();
