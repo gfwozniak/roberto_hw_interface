@@ -19,7 +19,15 @@ class AugerFunctions:
         if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
             pass
         self.augerapi.setActuatorPositionTimeout(position=940, seconds=15)
-        self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=0.5)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=0.7)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-6000000, velocity=0.8)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=0.4)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-6000000, velocity=0.3)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=0.2)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-6000000, velocity=0.8)
+        self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=0.3)
+        self.augerapi.setAugerVelocityForDuration(velocity=.7, seconds=10)
+        print("I am alive")
         self.returnToNeutral()
         self.isRunning = False
 

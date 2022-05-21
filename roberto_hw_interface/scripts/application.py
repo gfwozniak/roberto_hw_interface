@@ -17,7 +17,7 @@ class Application:
 
         # START APPLICATION ON XBOX PRESS
         print("WAITING FOR XBOX, PRESS A AT ANY TIME TO STOP MOTORS")
-        self.joystick.waitUntilXBOX(timeout=100, period=.1)
+        self.joystick.waitUntilXBOX(timeout=1000000, period=.1)
         print("XBOX PRESSED: ZEROING AUGER")
         zero_thread = threading.Thread(target=self.robot_functions.zeroAuger)
         zero_thread.start()
@@ -66,8 +66,8 @@ class Application:
         self.robot_functions.e.set()
 
     def driveLoop(self, event):
-        self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.5
-        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.5
+        self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.3
+        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.3
 
 if __name__ == '__main__':
     rospy.init_node('Joy2RobotControl')

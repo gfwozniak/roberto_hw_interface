@@ -18,7 +18,7 @@ class RobertoFunctions:
         self.minebscrew = -7000000
         self.mineactuator = -80
         self.raugerspeed = -.9
-        self.faugerspeed = .9
+        self.faugerspeed = .5
         self.depositduration = 10
 
         self.bscrew_error = 50000
@@ -76,7 +76,7 @@ class RobertoFunctions:
     def zeroAuger(self):
         self.interrupt()
         print("zero b screw")
-        self.robot_api.setBScrewPosition(8000000)
+        self.robot_api.setBScrewPosition(position=8000000)
         if(not self.waitUntilLimit()):
             print("zero auger exit!")
             return
