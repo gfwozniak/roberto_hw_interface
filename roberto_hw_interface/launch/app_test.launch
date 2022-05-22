@@ -6,16 +6,18 @@
     <remap from="/actuator_cmd" to="/Roberto/actuator_pos_controller/command"/>
     <remap from="/auger_cmd" to="/Roberto/auger_controller/command"/>
     <remap from="/limit_cmd" to="/Roberto/limit_switch/command"/>
+    <remap from="/speed_switch_cmd" to="/Roberto/bscrew_speed_switch/command"/>
     <!--<remap from="/bscrew_pos" to="/bscrew_pos_state"/>-->
   </node>
 
   <node name="joy2" pkg="joy" type="joy_node" output="screen">
-    <param name="dev" value="/dev/input/js1"/>
+    <param name="dev" value="/dev/input/js0"/>
     <param name="default_trig_val" value="true"/>
   </node>
 
    <!-- launch rqt_gui with custom GUI's configurations -->
    <!-- Make sure to have the IP addresses sourced and have updatingPythonPackage2 downloaded -->
+
   <node name = "rqt_dashboard" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" 
   args = "--perspective-file $(find new_robot_urdf)/perspectives/GUI_with_Camera_and_Buttons.perspective"/>
 

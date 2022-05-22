@@ -16,9 +16,9 @@ class Application:
         init_thread.start()
 
         # START APPLICATION ON XBOX PRESS
-        print("WAITING FOR XBOX, PRESS A AT ANY TIME TO STOP MOTORS")
-        self.joystick.waitUntilXBOX(timeout=1000000, period=.1)
-        print("XBOX PRESSED: ZEROING AUGER")
+        print("WAITING FOR SQUARE, PRESS A AT ANY TIME TO STOP MOTORS")
+        self.joystick.waitUntilSQUARE(timeout=1000000, period=.1)
+        print("SQUARE PRESSED: ZEROING AUGER")
         zero_thread = threading.Thread(target=self.robot_functions.zeroAuger)
         zero_thread.start()
         self.robot_functions.delayinput()
@@ -26,7 +26,7 @@ class Application:
         rospy.Timer(rospy.Duration(0.05), self.driveLoop)
 
         while True:
-            if self.joystick.XBOX: # zero auger with XBOX
+            if self.joystick.SQUARE: # zero auger with XBOX
                 print("zero auger called")
                 thread = threading.Thread(target=self.robot_functions.zeroAuger)
                 thread.start()
@@ -47,19 +47,18 @@ class Application:
                 continue
 
             if self.joystick.X: # mine with X
-                thread = threading.Thread(target=self.robot_functions.mine)
+                #thread = threading.Thread(target=self.robot_functions.mine)
+                thread = threading.Thread(target=self.robot_functions.moveBScrewFast, args=(0,))
                 thread.start()
                 self.robot_functions.delayinput()
                 continue
 
             if self.joystick.Y: # deposit with Y
-                thread = threading.Thread(target=self.robot_functions.deposit)
+                #thread = threading.Thread(target=self.robot_functions.deposit)
+                thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(-2000000,))
                 thread.start()
                 self.robot_functions.delayinput()
                 continue
-
-            if self.joystick.SQUARE:
-                break
 
             time.sleep(0.1)
         

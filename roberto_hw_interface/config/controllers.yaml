@@ -28,6 +28,10 @@ Roberto:
       type: velocity_controllers/JointVelocityController
       joint: limit_switch
 
+    bscrew_speed_switch:
+      type: velocity_controllers/JointVelocityController
+      joint: bscrew_speed_switch
+
 #    left_wheel_controller:
 #      type: velocity_controllers/JointVelocityController
 #      joint: wheel_joint_0
