@@ -232,6 +232,7 @@ void Roberto::write(ros::Duration elapsed_time) {
     if (bscrew_speed_switch_command_ > 1)
     {
         ballScrewFalcon.ConfigMotionCruiseVelocity(bscrew_speed_switch_command_);
+        ROS_INFO("speed switching");
     }
 }
 
