@@ -21,6 +21,7 @@ class RobertoAPI:
         self._auger_publisher = rospy.Publisher('auger_cmd', Float64, queue_size=1)
         self._drivetrain_publisher = rospy.Publisher('drivetrain_cmd', Twist, queue_size=1)
         self._limit_publisher = rospy.Publisher('limit_cmd', Float64, queue_size=1)
+        self._speed_switch_publisher = rospy.Publisher('speed_switch_cmd', Float64, queue_size=1)
 
         # INITIALIZE COMMAND VARIABLES
         self._drivetrain_linear_x_cmd_ = 0.0
@@ -29,15 +30,17 @@ class RobertoAPI:
         self._bscrew_position_cmd_ = 0.0
         self._auger_run_cmd_ = 0.0
         self._limit_position_cmd_ = 0.0
+        self._speed_switch_cmd_ = 0.0
 
         # INITIALIZE SUBSCRIBERS and VARIABLES TO STORE DATA
         rospy.Subscriber('joint_states', JointState, self._joint_state_callback)
 
-        self.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.effort = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.velocity = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.effort = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         
         self.limit_switch_position = False
+        self.bscrew_speed = 0;
         self.is_joint_initialized = False
 
 #        # PARAMS
@@ -55,15 +58,17 @@ class RobertoAPI:
         # [0] actuator
         # [1] auger
         # [2] bscrew
-        # [3] limit_switch
-        # [4] wheel 0
-        # [5] wheel 1
+        # [3] bscrew speed
+        # [4] limit_switch
+        # [5] wheel 0
+        # [6] wheel 1
 
     def controlLoop(self, event):
         self._auger_publisher.publish(Float64(self._auger_run_cmd_))
         self._bscrew_publisher.publish(Float64(self._bscrew_position_cmd_))
         self._actuator_publisher.publish(Float64(self._actuator_position_cmd_))
         self._limit_publisher.publish(Float64(self._limit_position_cmd_))
+        self._speed_switch_publisher.publish(Float64(self._speed_switch_cmd_))
         twist = Twist()
         twist.linear.x = (self._drivetrain_linear_x_cmd_)
         twist.angular.z = (self._drivetrain_angular_z_cmd_)
@@ -77,8 +82,9 @@ class RobertoAPI:
         self.position = list(message.position)
         self.velocity = list(message.velocity)
         self.effort = list(message.effort)
-        self.limit_switch_position = (self.position[3] > 0.5)
-        self.is_joint_initialized = (self.effort[3] > 50)
+        self.limit_switch_position = (self.position[4] > 0.5)
+        self.bscrew_speed = self.position[3]
+        self.is_joint_initialized = (self.effort[4] > 50)
 
 #
 # OPERATION METHODS
@@ -109,8 +115,6 @@ class RobertoAPI:
         self._limit_position_cmd_ = 0
         return False
 
-
-    
     def waitUntilLimit(self, timeout, period):
         mustend = time.time() + timeout
         while time.time() < mustend:
