@@ -52,6 +52,12 @@ void Roberto::initRosControlJoints() {
     hardware_interface::JointHandle jointVelocityHandleLimitSwitch(jointStateHandleLimitSwitch, &limit_switch_zero_);
     velocity_joint_interface_.registerHandle(jointVelocityHandleLimitSwitch);
 
+// FAKE BSCREW SPEED SWITCH JOINT
+    hardware_interface::JointStateHandle jointStateHandleBScrewSpeedSwitch("bscrew_speed_switch", &bscrew_speed_switch_position_, &bscrew_speed_switch_velocity_, &bscrew_speed_switch_effort_);
+    joint_state_interface_.registerHandle(jointStateHandleBScrewSpeedSwitch);
+    hardware_interface::JointHandle jointVelocityHandleBScrewSpeedSwitch(jointStateHandleBScrewSpeedSwitch, &bscrew_speed_switch_command_);
+    velocity_joint_interface_.registerHandle(jointVelocityHandleBScrewSpeedSwitch);
+
 // WHEEL JOINTS 
 	for(int i=0; i<2; i++)
 	{
@@ -148,6 +154,10 @@ void Roberto::read() {
     limit_switch_velocity_ = 0;
     limit_switch_effort_ = 100;
 
+    // SPEED SWITCH READS
+    bscrew_speed_switch_position_ = ballScrewFalcon.ConfigGetParameter(ctre::phoenix::ParamEnum::eMotMag_VelCruise, 411);
+    bscrew_speed_switch_velocity_ = 0;
+    bscrew_speed_switch_effort_ = 0;
 }
 
 void Roberto::write(ros::Duration elapsed_time) {
@@ -216,6 +226,12 @@ void Roberto::write(ros::Duration elapsed_time) {
     if (limit_switch_zero_ > 1)
     {
         linearActuatorTalon.SetSelectedSensorPosition(0);
+    }
+
+    // SPEED SWITCH
+    if (bscrew_speed_switch_command_ > 1)
+    {
+        ballScrewFalcon.ConfigMotionCruiseVelocity(bscrew_speed_switch_command_);
     }
 }
 
