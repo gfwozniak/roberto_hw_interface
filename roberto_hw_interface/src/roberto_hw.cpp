@@ -86,7 +86,7 @@ void Roberto::initPhoenixObjects()
 
     TalonFXConfiguration bscrewMotionMagic;
     bscrewMotionMagic.primaryPID.selectedFeedbackSensor = (FeedbackDevice)TalonFXFeedbackDevice::IntegratedSensor;
-    bscrewMotionMagic.motionCruiseVelocity = 15000;
+    bscrewMotionMagic.motionCruiseVelocity = 25000;
     bscrewMotionMagic.motionAcceleration = 100000;
     bscrewMotionMagic.motionCurveStrength = 0;
     bscrewMotionMagic.slot0.kP = 0.005;
@@ -184,16 +184,23 @@ void Roberto::write(ros::Duration elapsed_time) {
     {
         linearActuatorTalon.Set(ControlMode::MotionMagic, actuator_joint_position_command_);
     }
-    ROS_INFO("Actuator Cmd: %.2f",actuator_joint_position_command_);
 
     // BSCREW WRITES
-    ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
+    double bmax = bscrew_joint_position_command_ + 5000;
+    double bmin = bscrew_joint_position_command_ - 5000;
     if (ballScrewFalcon.IsFwdLimitSwitchClosed())
     {
         ballScrewFalcon.Set(ControlMode::PercentOutput, -.9);
     }
-    ROS_INFO("BScrew Cmd: %.2f",bscrew_joint_position_command_);
-
+    else if (bpos < bmax && bpos > bmin)
+    {
+        ballScrewFalcon.Set(ControlMode::PercentOutput, 0);
+    }
+    else
+    {
+        ballScrewFalcon.Set(ControlMode::MotionMagic, bscrew_joint_position_command_);
+    }
+    
     // AUGER WRITES
     double current = augerFalcon.GetStatorCurrent();
     if (current < currentThreshold)
