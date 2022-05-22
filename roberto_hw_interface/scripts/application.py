@@ -55,7 +55,7 @@ class Application:
 
             if self.joystick.Y: # deposit with Y
                 #thread = threading.Thread(target=self.robot_functions.deposit)
-                thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(2000000,))
+                thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(-2000000,))
                 thread.start()
                 self.robot_functions.delayinput()
                 continue
