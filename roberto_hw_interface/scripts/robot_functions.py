@@ -128,6 +128,32 @@ class RobertoFunctions:
 #            return
 #        print("in depositin position")
 
+    def moveBScrewFast(self, bscrewposition):
+        print("before interrupt")
+        self.interrupt()
+        print("operation")
+        self.robot_api.setBScrewSpeed(25000)
+        self.robot_api.setBScrewPosition(bscrewposition)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=100000)):
+            return
+        if(not self.waitUntilEvent()):
+            print("final interrupt called")
+            return
+        print("what")
+
+    def moveBScrewSlow(self, bscrewposition):
+        print("before interrupt")
+        self.interrupt()
+        print("operation")
+        self.robot_api.setBScrewSpeed(15000)
+        self.robot_api.setBScrewPosition(bscrewposition)
+        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=100000)):
+            return
+        if(not self.waitUntilEvent()):
+            print("final interrupt called")
+            return
+        print("what")
+
     def moveBScrew(self, bscrewposition):
         print("before interrupt")
         self.interrupt()

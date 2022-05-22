@@ -17,7 +17,8 @@
             /Roberto/actuator_pos_controller
             /Roberto/bscrew_pos_controller
             /Roberto/limit_switch
-            /Roberto/drivetrain_controller"> 
+            /Roberto/drivetrain_controller
+            /Roberto/bscrew_speed_switch"> 
   </node>
 
   <node name="Telemetry" pkg="roberto_hw_interface" type="telemetry_republisher"/>

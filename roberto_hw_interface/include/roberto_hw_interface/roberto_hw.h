@@ -72,6 +72,12 @@ class Roberto : public hardware_interface::RobotHW
         double limit_switch_effort_;
         double limit_switch_zero_;
 
+        // bscrew_speed switch
+        double bscrew_speed_switch_position_;
+        double bscrew_speed_switch_velocity_;
+        double bscrew_speed_switch_effort_;
+        double bscrew_speed_switch_command_;
+
         ctre::phoenix::motorcontrol::can::TalonFX rightDriveFalcon;
         ctre::phoenix::motorcontrol::can::TalonFX leftDriveFalcon;
         ctre::phoenix::motorcontrol::can::TalonSRX linearActuatorTalon;
