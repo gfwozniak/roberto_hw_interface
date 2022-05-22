@@ -155,7 +155,7 @@ void Roberto::read() {
     limit_switch_effort_ = 100;
 
     // SPEED SWITCH READS
-    bscrew_speed_switch_position_ = ballScrewFalcon.ConfigGetParameter(ctre::phoenix::ParamEnum::eMotMag_VelCruise, 411);
+    bscrew_speed_switch_position_ = 0;
     bscrew_speed_switch_velocity_ = 0;
     bscrew_speed_switch_effort_ = 0;
 }
@@ -232,6 +232,7 @@ void Roberto::write(ros::Duration elapsed_time) {
     if (bscrew_speed_switch_command_ > 1)
     {
         ballScrewFalcon.ConfigMotionCruiseVelocity(bscrew_speed_switch_command_);
+	ROS_INFO("speed switching");
     }
 }
 
