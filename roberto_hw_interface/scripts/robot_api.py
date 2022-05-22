@@ -157,10 +157,10 @@ class JoystickReader:
         self.LTHUMB = message.buttons[9]
         self.RTHUMB = message.buttons[10]
 
-    def waitUntilXBOX(self, timeout, period):
+    def waitUntilSQUARE(self, timeout, period):
         mustend = time.time() + timeout
         while time.time() < mustend:
-            if self.XBOX: 
+            if self.SQUARE: 
                 return True
             time.sleep(period)
         return False

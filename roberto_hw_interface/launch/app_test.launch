@@ -10,13 +10,15 @@
   </node>
 
   <node name="joy2" pkg="joy" type="joy_node" output="screen">
-    <param name="dev" value="/dev/input/js1"/>
+    <param name="dev" value="/dev/input/js0"/>
     <param name="default_trig_val" value="true"/>
   </node>
 
    <!-- launch rqt_gui with custom GUI's configurations -->
    <!-- Make sure to have the IP addresses sourced and have updatingPythonPackage2 downloaded -->
-  <node name = "rqt_dashboard" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" 
-  args = "--perspective-file $(find new_robot_urdf)/perspectives/GUI_with_Camera.perspective"/>
+
+<!--  <node name = "rqt_dashboard" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" 
+  args = "--><!--perspective-file $(find new_robot_urdf)/perspectives/GUI_with_Camera.perspective"/>
+  -->
 
 </launch>
