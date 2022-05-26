@@ -13,7 +13,7 @@ class RobertoFunctions:
     # positional variables
         self.neutralbscrew = -10000
         self.neutralactuator = -17
-        self.depositbscrew = -7000000
+        self.depositbscrew = -3500000
         self.depositactuator = -2
         self.minebscrew = -7000000
         self.mineactuator = -80
