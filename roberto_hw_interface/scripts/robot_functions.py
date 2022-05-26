@@ -12,14 +12,14 @@ class RobertoFunctions:
 
     # positional variables
         self.neutralbscrew = -10000
-        self.neutralactuator = -5
-        self.depositbscrew = -2000000
-        self.depositactuator = 0
+        self.neutralactuator = -17
+        self.depositbscrew = -7000000
+        self.depositactuator = -2
         self.minebscrew = -7000000
         self.mineactuator = -80
         self.raugerspeed = -.9
-        self.faugerspeed = .5
-        self.depositduration = 10
+        self.faugerspeed = .9
+        self.depositduration = 20
 
         self.bscrew_error = 50000
         self.actuator_error = 3
@@ -76,7 +76,7 @@ class RobertoFunctions:
     def zeroAuger(self):
         self.interrupt()
         print("zero b screw")
-        self.robot_api.setBScrewSpeed(25000)
+        self.robot_api.setBScrewSpeed(2500000)
         self.robot_api.setBScrewPosition(position=8000000)
         if(not self.waitUntilLimit()):
             print("zero auger exit!")
@@ -193,7 +193,7 @@ class RobertoFunctions:
     def neutralPosition(self):
         self.interrupt()
         # MOVE BSCREW TO NEUTRAL
-        self.robot_api.setBScrewSpeed(25000)
+        self.robot_api.setBScrewSpeed(2500000)
         self.robot_api.setBScrewPosition(self.neutralbscrew)
         if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
             return
@@ -208,7 +208,7 @@ class RobertoFunctions:
     def deposit(self):
         self.interrupt()
         # MOVE BSCREW TO NEUTRAL
-        self.robot_api.setBScrewSpeed(25000)
+        self.robot_api.setBScrewSpeed(2500000)
         self.robot_api.setBScrewPosition(self.neutralbscrew)
         if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
             return
@@ -256,7 +256,7 @@ class RobertoFunctions:
             self.robot_api.setAugerVelocity(0)
             return
         # MOVE BSCREW TO NEUTRAL
-        self.robot_api.setBScrewSpeed(25000)
+        self.robot_api.setBScrewSpeed(2500000)
         self.robot_api.setAugerVelocity(0)
         self.robot_api.setBScrewPosition(self.neutralbscrew)
         if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):

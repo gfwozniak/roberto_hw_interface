@@ -47,15 +47,15 @@ class Application:
                 continue
 
             if self.joystick.X: # mine with X
-                #thread = threading.Thread(target=self.robot_functions.mine)
-                thread = threading.Thread(target=self.robot_functions.moveBScrewFast, args=(0,))
+                thread = threading.Thread(target=self.robot_functions.mine)
+                #thread = threading.Thread(target=self.robot_functions.moveBScrewFast, args=(0,))
                 thread.start()
                 self.robot_functions.delayinput()
                 continue
 
             if self.joystick.Y: # deposit with Y
-                #thread = threading.Thread(target=self.robot_functions.deposit)
-                thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(-2000000,))
+                thread = threading.Thread(target=self.robot_functions.deposit)
+                #thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(-2000000,))
                 thread.start()
                 self.robot_functions.delayinput()
                 continue
@@ -65,8 +65,8 @@ class Application:
         self.robot_functions.e.set()
 
     def driveLoop(self, event):
-        self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.3
-        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.3
+        self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.4
+        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.5
 
 if __name__ == '__main__':
     rospy.init_node('Joy2RobotControl')
