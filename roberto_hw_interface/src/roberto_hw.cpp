@@ -167,12 +167,11 @@ void Roberto::write(ros::Duration elapsed_time) {
 
     double apos = linearActuatorTalon.GetSelectedSensorPosition();
     double bpos = ballScrewFalcon.GetSelectedSensorPosition();
-    bool is_actuator_neutral = (apos > -20);
-    bool is_bscrew_neutral = (bpos > -20000);
+    bool is_actuator_neutral = (apos > -40);
     bool is_actuator_mine = (apos < -70);
 
     // WHEEL WRITES
-    if (is_actuator_neutral && is_bscrew_neutral)
+    if (is_actuator_neutral)
     {
         rightDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[1] * wheelMultiplier));
         leftDriveFalcon.Set(ControlMode::Velocity, (wheel_joint_velocity_command_[0] * wheelMultiplier));

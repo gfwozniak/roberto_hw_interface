@@ -20,7 +20,6 @@ class RobertoFunctions:
         self.raugerspeed = -.9
         self.faugerspeed = .9
         self.depositduration = 20
-
         self.bscrew_error = 50000
         self.actuator_error = 3
 
