@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from concurrent.futures import thread
+from math import dist
 from robot_api import RobertoAPI
 import threading
 import time
@@ -9,6 +11,7 @@ class RobertoFunctions:
     def __init__(self):
         self.robot_api = RobertoAPI()
         self.e = threading.Event()
+        self.d = threading.Event()
 
     # positional variables
         self.neutralbscrew = -10000
@@ -56,22 +59,13 @@ class RobertoFunctions:
         self.robot_api.setBScrewPosition(self.robot_api.position[2])
         self.robot_api.setActuatorPosition(self.robot_api.position[0])
 
+# AUGER MOTOR COMMANDS
     def noMotorCommand(self):
         self.interrupt()
         print("motors stopped")
         if(not self.waitUntilEvent()):
             return
 
-#    def zeroBScrew(self):
-#        self.interrupt()
-#        self.robot_api.setBScrewPosition(8000000)
-#        if(not self.waitUntilLimit()):
-#            return
-#        self.robot_api.setBScrewPosition(0)
-#        if(not self.waitUntilEvent()):
-#            return
-
-# good
     def zeroAuger(self):
         self.interrupt()
         print("zero b screw")
@@ -93,102 +87,6 @@ class RobertoFunctions:
             print("zero auger exit!")
             return
 
-#    def returnToNeutral(self):
-#        self.interrupt()
-#        print("resetting bscrew")
-#        bscrewposition = -10000
-#        self.robot_api.setBScrewPosition(bscrewposition)
-#        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=6000)):
-#            return
-#        print("resetting actuator")
-#        actuatorposition = -10
-#        self.robot_api.setActuatorPosition(actuatorposition)
-#        if(not self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=actuatorposition,actuator_error=1)):
-#            return
-#        print("in neutral")
-#        if(not self.waitUntilEvent()):
-#            return
-#    
-#    def deposit(self):
-#        self.interrupt()
-#        print("depositing")
-#        bscrewpos1 = -10000
-#        self.robot_api.setBScrewPosition(bscrewpos1)
-#        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewpos1,bscrew_error=6000)):
-#            return
-#        print("set bscrew")
-#        actuatorposition = 0
-#        self.robot_api.setActuatorPosition(actuatorposition)
-#        if(not self.waitUntilActuatorPosition(timeout=10,period=0.05,targetpos=actuatorposition,actuator_error=1)):
-#            return
-#        print("set actuator")
-#        bscrewpos2 = -2000000
-#        self.robot_api.setBScrewPosition(bscrewpos2)
-#        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewpos2,bscrew_error=6000)):
-#            return
-#        print("in depositin position")
-#
-#    def moveBScrewFast(self, bscrewposition):
-#        print("before interrupt")
-#        self.interrupt()
-#        print("operation")
-#        self.robot_api.setBScrewSpeed(25000)
-#        self.robot_api.setBScrewPosition(bscrewposition)
-#        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=100000)):
-#            return
-#        if(not self.waitUntilEvent()):
-#            print("final interrupt called")
-#            return
-#        print("what")
-#
-#    def moveBScrewSlow(self, bscrewposition):
-#        print("before interrupt")
-#        self.interrupt()
-#        print("operation")
-#        self.robot_api.setBScrewSpeed(15000)
-#        self.robot_api.setBScrewPosition(bscrewposition)
-#        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=100000)):
-#            return
-#        if(not self.waitUntilEvent()):
-#            print("final interrupt called")
-#            return
-#        print("what")
-#
-#    def moveBScrew(self, bscrewposition):
-#        print("before interrupt")
-#        self.interrupt()
-#        print("operation")
-#        self.robot_api.setBScrewPosition(bscrewposition)
-#        if(not self.waitUntilBScrewPosition(timeout=30,period=0.05,targetpos=bscrewposition,bscrew_error=100000)):
-#            return
-#        if(not self.waitUntilEvent()):
-#            print("final interrupt called")
-#            return
-#        print("what")
-#
-#    def moveActuator(self, actuatorposition):
-#        self.interrupt()
-#        print("operation")
-#        self.robot_api.setActuatorPosition(actuatorposition)
-#        print("before awaits")
-#        if(not self.waitUntilActuatorPosition(timeout=30,period=0.05,targetpos=actuatorposition,actuator_error=3)):
-#            print("early exit")
-#            return
-#        print("awaiting next input")
-#        if(not self.waitUntilEvent()):
-#            print("standard exit")
-#            return
-#
-#    def moveAuger(self, augervelocity, time):
-#        self.interrupt()
-#        self.robot_api.setAugerVelocity(augervelocity)
-#        if(not self.waitUntilTime(seconds=time)):
-#            self.robot_api.setAugerVelocity(0)
-#            return
-#        self.robot_api.setAugerVelocity(0)
-#        if(not self.waitUntilEvent()):
-#            return
-#    
     def neutralPosition(self):
         self.interrupt()
         # MOVE BSCREW TO NEUTRAL
@@ -268,6 +166,61 @@ class RobertoFunctions:
         if(not self.waitUntilEvent()):
             return
 
+# DRIVE FUNCTIONS
+
+    def driveDistance(self):
+        self.interrupt()
+        self.d.set()
+        self.robot_api.setDrivetrainVelocity(linearvelocity=5000,angularvelocity=0) # fix, won't move unless large value
+        if(not self.waitUntilDistance(period=0.1,distance=self.robot_api.distance_to_sieve)):
+            print("Forced exit")
+            self.d.clear()
+            return
+        print("target reached")
+        self.robot_api.setDrivetrainVelocity(linearvelocity=0,angularvelocity=0) 
+        self.d.clear()
+    
+#    def depositDrive(self):
+#        self.interrupt()
+#        self.d.set()
+#        self.robot_api.setDrivetrainVelocity(linearvelocity=100)
+#        if(not self.waitUntilDistance(period=0.1,distance=self.robot_api.distance_to_sieve)):
+#            print("Forced exit")
+#            self.d.clear()
+#            return
+#        print("target reached")
+#        self.d.clear()
+#        self.robot_api.setBScrewSpeed(2500000)
+#        self.robot_api.setBScrewPosition(self.neutralbscrew)
+#        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+#            return
+#        # MOVE ACTUATOR TO DEPOSIT
+#        self.robot_api.setActuatorPosition(self.depositactuator)
+#        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.depositactuator,actuator_error=self.actuator_error)):
+#            return
+#        # MOVE BSCREW TO DEPOSIT
+#        self.robot_api.setBScrewPosition(self.depositbscrew)
+#        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.depositbscrew,bscrew_error=self.bscrew_error)):
+#            return
+#        # REVERSE AUGER FOR 10 SECONDS
+#        self.robot_api.setAugerVelocity(self.raugerspeed)
+#        if(not self.waitUntilTime(seconds=self.depositduration)):
+#            self.robot_api.setAugerVelocity(0)
+#            return
+#        self.robot_api.setAugerVelocity(0)
+#        # MOVE BSCREW TO NEUTRAL
+#        self.robot_api.setBScrewPosition(self.neutralbscrew)
+#        if(not self.waitUntilBScrewPosition(timeout=1000,period=0.05,targetpos=self.neutralbscrew,bscrew_error=self.bscrew_error)):
+#            return
+#        # MOVE ACTUATOR TO NEUTRAL
+#        self.robot_api.setActuatorPosition(self.neutralactuator)
+#        if(not self.waitUntilActuatorPosition(timeout=1000,period=0.05,targetpos=self.neutralactuator,actuator_error=self.actuator_error)):
+#            return
+#        # AWAIT
+#        if(not self.waitUntilEvent()):
+#            return
+        
+
 # Waiting events
     
     def waitUntilLimit(self):
@@ -340,52 +293,17 @@ class RobertoFunctions:
         print("timeout")
         return True
 
-#    def __init__(self):
-#        self.augerapi = RobertoAPI()
-#        self.isRunning = False
-#
-#    def returntoNeutral(self):
-#        self.isRunning = True
-#        self.augerapi.setBScrewPosition(position=-5000)
-#        self.augerapi.setActuatorPositionTimeout(position=1010, seconds=10)
-#        self.isRunning = False
-#
-#    def deployAuger(self):
-#        self.isRunning = True
-#        if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
-#            pass
-#        self.augerapi.setActuatorPositionTimeout(position=940, seconds=15)
-#        self.augerapi.setBScrewPositionAndAugerVelocity(position=-7000000, velocity=0.5)
-#        self.returnToNeutral()
-#        self.isRunning = False
-#
-#    def depositAuger(self):
-#        self.isRunning = True
-#        if (self.augerapi.bscrew_position > 20000 or self.augerapi.bscrew_position < -20000):
-#            pass
-#        self.augerapi.setActuatorPositionTimeout(position=1040, seconds=15)
-#        self.augerapi.setBScrewPosition(position=-2000000)
-#        self.augerapi.setAugerVelocityForDuration(velocity=-.8, seconds=6)
-#        self.augerapi.setAugerVelocityForDuration(velocity=0, seconds=1)
-#        self.returnToNeutral()
-#        self.isRunning = False
-#
-#    def zeroAuger(self):
-#        self.isRunning = True
-#        self.augerapi.zeroBScrew()
-#        self.returnToNeutral()
-#        self.isRunning = False
-
-
-
-
-        
-#if __name__ == '__main__':
-#    try:
-#        rospy.init_node('auger_motor_calls', anonymous=True)
-#        robot = AugerAPI()
-#        print("Setting actuator position to 100")
-#        robot.setActuatorPosition(position=100)
-#        print("finished")
-#    except rospy.ROSInterruptException:
-#        pass
+    def waitUntilDistance(self, period, distance):
+#        if (distance < 0):
+#            distance = -1 * distance
+                                                                                                                    # check sign
+        targetpos = self.robot_api.position[5] + distance
+        while True:
+            if (self.robot_api.position[5] > targetpos):
+                print("position target reached")
+                return True
+            if (self.e.is_set()):
+                print("interrupt called")
+                self.e.clear()
+                return False
+            time.sleep(period)

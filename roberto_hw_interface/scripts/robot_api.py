@@ -51,6 +51,9 @@ class RobertoAPI:
         self._rate = rospy.Rate(10) # 10hz
         self._actuator_error = 1.0
         self._bscrew_error = 100000.0
+        self.encoder_line = 0.0
+        self.encoder_sieve = 0.0
+        self.distance_to_sieve = 0.0
 
         # TIMER
         rospy.Timer(rospy.Duration(0.05), self.controlLoop)
@@ -127,6 +130,13 @@ class RobertoAPI:
                 return True
             time.sleep(period)
         return False
+
+    def setEncoderSieve(self):
+        self.encoder_sieve = self.position[5]
+    
+    def setEncoderLine(self):
+        self.encoder_line = self.position[5]
+        self.distance_to_sieve = self.encoder_sieve - self.encoder_line
     
 class JoystickReader:
 

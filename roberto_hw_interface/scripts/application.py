@@ -23,10 +23,12 @@ class Application:
         zero_thread.start()
         self.robot_functions.delayinput()
 
-        rospy.Timer(rospy.Duration(0.05), self.driveLoop)
+#        rospy.Timer(rospy.Duration(0.05), self.driveLoop)
+        drive_thread = threading.Thread(target=self.driveLoop)
+        drive_thread.start()
 
         while True:
-            if self.joystick.SQUARE: # zero auger with XBOX
+            if self.joystick.SQUARE: # zero auger with SQUARE
                 print("zero auger called")
                 thread = threading.Thread(target=self.robot_functions.zeroAuger)
                 thread.start()
@@ -41,32 +43,41 @@ class Application:
                 self.robot_functions.delayinput()
 
             if self.joystick.B: # neutral position with B
-                thread = threading.Thread(target=self.robot_functions.neutralPosition)
-                thread.start()
-                self.robot_functions.delayinput()
-                continue
+                self.robot_functions.robot_api.setEncoderLine()
+#                thread = threading.Thread(target=self.robot_functions.neutralPosition)
+#                thread.start()
+#                self.robot_functions.delayinput()
+#                continue
 
             if self.joystick.X: # mine with X
-                thread = threading.Thread(target=self.robot_functions.mine)
-                #thread = threading.Thread(target=self.robot_functions.moveBScrewFast, args=(0,))
-                thread.start()
-                self.robot_functions.delayinput()
-                continue
+                self.robot_functions.robot_api.setEncoderSieve()
+#                thread = threading.Thread(target=self.robot_functions.mine)
+#                #thread = threading.Thread(target=self.robot_functions.moveBScrewFast, args=(0,))
+#                thread.start()
+#                self.robot_functions.delayinput()
+#                continue
 
             if self.joystick.Y: # deposit with Y
-                thread = threading.Thread(target=self.robot_functions.deposit)
-                #thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(-2000000,))
+                print("function called")
+                thread = threading.Thread(target=self.robot_functions.driveDistance)
                 thread.start()
                 self.robot_functions.delayinput()
                 continue
+#                thread = threading.Thread(target=self.robot_functions.deposit)
+#                #thread = threading.Thread(target=self.robot_functions.moveBScrewSlow, args=(-2000000,))
+#                thread.start()
+#                self.robot_functions.delayinput()
+#                continue
 
             time.sleep(0.1)
-        
-        self.robot_functions.e.set()
 
-    def driveLoop(self, event):
-        self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.4
-        self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.5
+    def driveLoop(self):
+        while True:
+            self.robot_functions.robot_api._drivetrain_linear_x_cmd_ = self.joystick.linearx * 0.4
+            self.robot_functions.robot_api._drivetrain_angular_z_cmd_ = -self.joystick.angularz * 0.5
+            while (self.robot_functions.d.is_set()):
+                time.sleep(0.1)
+            time.sleep(0.05)
 
 if __name__ == '__main__':
     rospy.init_node('Joy2RobotControl')
