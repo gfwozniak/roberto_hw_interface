@@ -26,3 +26,5 @@ Y - Deposit
 A - Stop all motors
 B - Neutral position
 The other buttons are not standardized in labelling so I don't know what to call them but there are some other binds.
+
+Special thanks to the rest of the 2022 programming team: Oliver Burrus, Nayal Merchant, Giovanni Zavalza, and Stavros Dellis
