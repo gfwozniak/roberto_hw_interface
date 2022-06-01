@@ -1,5 +1,5 @@
 # DISCLAIMER: This software is deprecated and not maintained
-This repository holds the main ROS Melodic Package for College of DuPage's 2022 Lunabotics robot.
+This repository holds the ROS Melodic Package for College of DuPage's 2022 Lunabotics robot.
 
 ## What this code can be used for
 - Running the 2022 Lunabotics robot on ROS melodic 
